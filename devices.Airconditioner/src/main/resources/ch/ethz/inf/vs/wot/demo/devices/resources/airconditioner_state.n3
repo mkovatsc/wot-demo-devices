@@ -1,0 +1,10 @@
+# Air Conditioner (State)
+@prefix local: <local#>.
+@prefix : <ex#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix st: <http://purl.org/restdesc/states#>.
+
+
+{local:state :power [[POWER_STATE]]} a st:InitialState.
+
+

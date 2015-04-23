@@ -1,0 +1,36 @@
+# Smart TV
+@prefix : <ex#>.
+@prefix local: <local#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix geonames: <http://www.geonames.org/ontology#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix st: <http://purl.org/restdesc/states#>.
+@prefix ex: <http://example.org/#>.
+
+# Domain-specific namespaces
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+
+local:unknown a dbpedia:Television.
+
+local:smarttv a :smarttv.
+
+local:devicelocation a :question;
+	:text ("Where is the SmartTV located?");
+	:replyType :location.
+
+{
+	local:devicelocation :answer ?a
+
+} => {
+	local:smarttv :locatedAt  ?a.
+}.
+
+
+{
+	local:smarttv :locatedAt  ?a. 
+
+} => {
+	local:devicelocation :answer ?a
+}.

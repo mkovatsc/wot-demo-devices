@@ -1,0 +1,97 @@
+# Air Conditioner
+# Change the temperature at a specific place (Celsius)
+
+# Standard namespaces
+@prefix local: <local#>.
+@prefix : <ex#>.
+@prefix ex: <http://example.org/#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix st: <http://purl.org/restdesc/states#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+# Domain-specific namespaces
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+
+local:unknown a dbpedia:Temperature.
+
+local:thermostat a :thermostat.
+
+local:devicelocation a :question;
+	:text ("Where is the Airconditioner located?");
+	:replyType :location.
+
+
+{
+	local:devicelocation :answer ?a
+} => {
+	local:thermostat :locatedAt  ?a.
+}.
+
+
+{
+	local:thermostat :locatedAt  ?a.
+} => {
+	local:devicelocation :answer ?a
+}.
+
+# if unanswered
+{
+   local:devicelocation a :openquestion.
+} => {
+   local:thermostat :locatedAt  [a :location].
+}.
+
+
+
+{
+	?r a dbpedia:Temperature.
+}
+=>
+{
+	?r ex:derivedFrom ?r.
+}.
+
+
+
+local:sample_celsius a dbpedia:Temperature;
+  ex:hasValue "x";
+  ex:hasUnit "Celsius".
+
+
+{
+	?new a dbpedia:Temperature; ex:hasValue ?tempValue; ex:hasUnit "Celsius".
+	local:thermostat :locatedAt ?location.
+	?state a st:State;
+		log:includes {local:state :power :on}.
+	?url a local:url.
+}
+=>
+{
+	_:request http:methodName "PUT";
+		http:requestURI (?url "/ac/target");
+		http:reqBody ?tempValue.
+
+	[ a st:StateChange;
+		st:replaced { ?location ex:hasTemperature ?new. };
+		st:parent ?state ].
+}.
+
+
+
+{
+	?state a st:State;
+	log:includes {local:state :power :off}.
+	?url a local:url.
+}
+=>
+{
+	_:request http:methodName "PUT";
+	http:requestURI (?url "/pwr/switch");
+	http:reqBody "1".
+
+	[ a st:StateChange;
+	st:replaced { local:state :power :on. };
+	st:parent ?state ].
+}.
+
