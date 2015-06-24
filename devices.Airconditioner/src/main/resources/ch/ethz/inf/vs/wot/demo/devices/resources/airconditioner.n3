@@ -23,7 +23,7 @@ local:devicelocation a :question;
 
 
 {
-	local:devicelocation :answer ?a
+	local:devicelocation :hasAnswer ?a
 } => {
 	local:thermostat :locatedAt  ?a.
 }.
@@ -32,7 +32,7 @@ local:devicelocation a :question;
 {
 	local:thermostat :locatedAt  ?a.
 } => {
-	local:devicelocation :answer ?a
+	local:devicelocation :hasAnswer ?a
 }.
 
 # if unanswered

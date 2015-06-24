@@ -2,6 +2,14 @@ package ch.ethz.inf.vs.wot.demo.devices.utils;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import ch.ethz.inf.vs.semantics.parser.elements.Formula;
+import ch.ethz.inf.vs.semantics.parser.elements.Iri;
+import ch.ethz.inf.vs.semantics.parser.elements.N3Document;
+import ch.ethz.inf.vs.semantics.parser.elements.N3Element;
+import ch.ethz.inf.vs.semantics.parser.elements.Prefix;
+import ch.ethz.inf.vs.semantics.parser.elements.Triple;
+import ch.ethz.inf.vs.semantics.parser.elements.Verb;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,15 +23,6 @@ import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
-
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Formula;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Iri;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Literal;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.N3Document;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.N3Element;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Prefix;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Triple;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Verb;
 
 public class Question extends JPanel {
     
@@ -78,7 +77,7 @@ public class Question extends JPanel {
         Iri replyType = input.importToDocument((Iri) triple.get(":replyType"));
         Triple t = new Triple(answerObject)
                 .add(new Iri(input, ":name"), new Literal("\"" + StringEscapeUtils.escapeJava(answerField.getText()) + "\""))
-                .add(new Verb("a"), new Iri(input, ":answer"))
+                .add(new Verb("a"), new Iri(input, ":Answer"))
                 .add(new Verb("a"), replyType);
 
         return sendResponse(t);
@@ -102,7 +101,7 @@ public class Question extends JPanel {
         question = goal.importToDocument(question);
         Iri answerObject = goal.importToDocument((Iri) t.subject);
         t = new Triple(question)
-                .add(new Verb(":answer"), answerObject);
+                .add(new Verb(":hasAnswer"), answerObject);
         Formula s = new Formula();
         s.add(t);
         t = new Triple(s).add(new Verb("=>"), new Formula());

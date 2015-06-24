@@ -8,11 +8,11 @@ import ch.ethz.inf.vs.wot.demo.devices.utils.CoapRequest;
 import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
 import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
 import ch.ethz.inf.vs.wot.demo.devices.utils.Question;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.ExecutionPlan;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.N3Utils;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.N3Document;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.N3Element;
-import ch.ethz.inf.vs.wot.semanticm2m.parser.elements.Triple;
+import ch.ethz.inf.vs.semantics.parser.ExecutionPlan;
+import ch.ethz.inf.vs.semantics.parser.N3Utils;
+import ch.ethz.inf.vs.semantics.parser.elements.N3Document;
+import ch.ethz.inf.vs.semantics.parser.elements.N3Element;
+import ch.ethz.inf.vs.semantics.parser.elements.Triple;
 
 import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.coap.LinkFormat;

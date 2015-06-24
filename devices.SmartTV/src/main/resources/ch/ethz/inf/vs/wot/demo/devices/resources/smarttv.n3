@@ -21,7 +21,7 @@ local:devicelocation a :question;
 	:replyType :location.
 
 {
-	local:devicelocation :answer ?a
+	local:devicelocation :hasAnswer ?a
 
 } => {
 	local:smarttv :locatedAt  ?a.
@@ -32,5 +32,5 @@ local:devicelocation a :question;
 	local:smarttv :locatedAt  ?a. 
 
 } => {
-	local:devicelocation :answer ?a
+	local:devicelocation :hasAnswer ?a
 }.
