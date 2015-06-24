@@ -4,10 +4,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import ch.ethz.inf.vs.semantics.parser.elements.Formula;
 import ch.ethz.inf.vs.semantics.parser.elements.Iri;
+import ch.ethz.inf.vs.semantics.parser.elements.Literal;
 import ch.ethz.inf.vs.semantics.parser.elements.N3Document;
 import ch.ethz.inf.vs.semantics.parser.elements.N3Element;
 import ch.ethz.inf.vs.semantics.parser.elements.Prefix;
-import ch.ethz.inf.vs.semantics.parser.elements.Triple;
+import ch.ethz.inf.vs.semantics.parser.elements.RDFResource;
 import ch.ethz.inf.vs.semantics.parser.elements.Verb;
 
 import java.awt.Color;
@@ -28,7 +29,7 @@ public class Question extends JPanel {
     
 	private static final long serialVersionUID = 1557460449720441816L;
 	
-	private Triple triple;
+	private RDFResource triple;
 	private JTextArea label = new JTextArea();
     private JTextField answerField = new JTextField();
     private String questionText;
@@ -36,7 +37,7 @@ public class Question extends JPanel {
     public boolean loading;
     public String id;
 
-    public Question(String id, Triple t) {
+    public Question(String id, RDFResource t) {
         this.id = id;
         
         this.setLayout(new GridLayout(2,1));
@@ -75,7 +76,7 @@ public class Question extends JPanel {
         Iri answerObject = new Iri(input, "in:" + UUID.randomUUID().toString().replace("-", ""));
 
         Iri replyType = input.importToDocument((Iri) triple.get(":replyType"));
-        Triple t = new Triple(answerObject)
+        RDFResource t = new RDFResource(answerObject)
                 .add(new Iri(input, ":name"), new Literal("\"" + StringEscapeUtils.escapeJava(answerField.getText()) + "\""))
                 .add(new Verb("a"), new Iri(input, ":Answer"))
                 .add(new Verb("a"), replyType);
@@ -84,10 +85,10 @@ public class Question extends JPanel {
     }
 
     public String sendResponse(N3Element.Subject subject) {
-        return sendResponse(new Triple(subject));
+        return sendResponse(new RDFResource(subject));
     }
 
-    public String sendResponse(Triple t) {
+    public String sendResponse(RDFResource t) {
 
         N3Document input = new N3Document();
         input.addPrefix(new Prefix(":", "<ex#>"));
@@ -100,17 +101,17 @@ public class Question extends JPanel {
         goal.addPrefix(new Prefix(":", "<ex#>"));
         question = goal.importToDocument(question);
         Iri answerObject = goal.importToDocument((Iri) t.subject);
-        t = new Triple(question)
+        t = new RDFResource(question)
                 .add(new Verb(":hasAnswer"), answerObject);
         Formula s = new Formula();
         s.add(t);
-        t = new Triple(s).add(new Verb("=>"), new Formula());
+        t = new RDFResource(s).add(new Verb("=>"), new Formula());
         goal.statements.add(t);
         String query = goal + "\n########################\n" + input;
         return query;
     }
 
-    public void update(Triple t) {
+    public void update(RDFResource t) {
         this.triple = t;
         questionText = t.getReadableString(":text");
         label.setText(questionText);
@@ -121,8 +122,8 @@ public class Question extends JPanel {
         if (o instanceof Formula) {
             Formula f = (Formula) o;
             for (N3Element.Statement s : f) {
-                if (s instanceof Triple) {
-                    Option qoption = new Option(((Triple) s).subject, ((Triple) s).getReadableString(":name"));
+                if (s instanceof RDFResource) {
+                    Option qoption = new Option(((RDFResource) s).subject, ((RDFResource) s).getReadableString(":name"));
                     options.add(qoption);
                 }
             }
