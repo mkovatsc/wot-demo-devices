@@ -37,6 +37,11 @@ public class AcVent extends CoapResource {
 			return;
 		}
 		
+		if (!PowerRelay.getRelay()) {
+			exchange.respond(SERVICE_UNAVAILABLE, "turn on first");
+			return;
+		}
+		
 		String pl = exchange.getRequestText();
 		if (pl.matches("[0-9]")) {
 			int set = Integer.parseInt(pl);
@@ -46,6 +51,7 @@ public class AcVent extends CoapResource {
 				// complete the request
 				exchange.respond(CHANGED);
 				
+				// true shows cover, false shows open vent
 				Airconditioner.setVent(1, true);
 				Airconditioner.setVent(2, true);
 				Airconditioner.setVent(3, true);
@@ -63,6 +69,6 @@ public class AcVent extends CoapResource {
 			}
 		}
 
-		exchange.respond(BAD_REQUEST, "0--3");
+		exchange.respond(BAD_REQUEST, "[0-3]");
 	}
 }

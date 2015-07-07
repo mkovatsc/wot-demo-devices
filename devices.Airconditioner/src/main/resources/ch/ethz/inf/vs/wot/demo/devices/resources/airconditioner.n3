@@ -13,7 +13,7 @@
 # Domain-specific namespaces
 @prefix dbpedia: <http://dbpedia.org/resource/>.
 
-local:unknown a dbpedia:Temperature.
+:unknown a dbpedia:Temperature.
 
 local:thermostat a :thermostat.
 
@@ -25,36 +25,32 @@ local:devicelocation a :question;
 {
 	local:devicelocation :hasAnswer ?a
 } => {
-	local:thermostat :locatedAt  ?a.
+	local:thermostat :locatedAt ?a.
 }.
 
 
 {
-	local:thermostat :locatedAt  ?a.
+	local:thermostat :locatedAt ?a.
 } => {
 	local:devicelocation :hasAnswer ?a
 }.
 
-# if unanswered
+# if unanswered fit unspecified locations
 {
    local:devicelocation a :openquestion.
 } => {
-   local:thermostat :locatedAt  [a :location].
+   local:thermostat :locatedAt [a :location].
 }.
-
 
 
 {
 	?r a dbpedia:Temperature.
-}
-=>
-{
+} => {
 	?r ex:derivedFrom ?r.
 }.
 
 
-
-local:sample_celsius a dbpedia:Temperature;
+:sample_celsius a dbpedia:Temperature;
   ex:hasValue "x";
   ex:hasUnit "Celsius".
 
@@ -63,11 +59,9 @@ local:sample_celsius a dbpedia:Temperature;
 	?new a dbpedia:Temperature; ex:hasValue ?tempValue; ex:hasUnit "Celsius".
 	local:thermostat :locatedAt ?location.
 	?state a st:State;
-		log:includes {local:state :power :on}.
+		log:includes {local:state :power :on.}.
 	?url a local:url.
-}
-=>
-{
+} => {
 	_:request http:methodName "PUT";
 		http:requestURI (?url "/ac/target");
 		http:reqBody ?tempValue.
@@ -78,20 +72,32 @@ local:sample_celsius a dbpedia:Temperature;
 }.
 
 
-
+# Switch on
 {
 	?state a st:State;
-	log:includes {local:state :power :off}.
+	log:includes {local:state :power :off.}.
 	?url a local:url.
-}
-=>
-{
+} => {
 	_:request http:methodName "PUT";
 	http:requestURI (?url "/pwr/switch");
 	http:reqBody "1".
 
 	[ a st:StateChange;
-	st:replaced { local:state :power :on. };
+	st:replaced { local:state :power :on.};
 	st:parent ?state ].
 }.
 
+# Switch off
+{
+	?state a st:State;
+	log:includes {local:state :power :on.}.
+	?url a local:url.
+} => {
+	_:request http:methodName "PUT";
+	http:requestURI (?url "/pwr/switch");
+	http:reqBody "0".
+
+	[ a st:StateChange;
+	st:replaced { local:state :power :off.};
+	st:parent ?state ].
+}.

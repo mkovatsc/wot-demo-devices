@@ -46,6 +46,11 @@ public class Airconditioner extends CoapServer {
 	private static ScheduledThreadPoolExecutor tasks = new ScheduledThreadPoolExecutor(1);
 	private static ScheduledFuture<?> notifyHandle = null;
 	
+	/**
+	 * 
+	 * @param index the vent
+	 * @param mode true shows cover, false shows open vent
+	 */
 	public static void setVent(int index, boolean mode) {
 		switch (index) {
 		case 1: vent1.setVisible(mode); vent1.repaint(); break;

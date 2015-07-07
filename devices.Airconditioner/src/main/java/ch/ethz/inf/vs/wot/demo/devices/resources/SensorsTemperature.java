@@ -14,7 +14,7 @@ import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
 
 public class SensorsTemperature extends CoapResource {
 	
-	private float temp = 20f;
+	private static float temp = 20f;
 
 	public SensorsTemperature() {
 		super("temp");
@@ -27,7 +27,11 @@ public class SensorsTemperature extends CoapResource {
 
 		// Set timer task scheduling
 		Timer timer = new Timer();
-		timer.schedule(new TimeTask(), 0, 10000);
+		timer.schedule(new TimeTask(), 1000, 5000);
+	}
+	
+	public static float getTemp() {
+		return temp;
 	}
 
 	private class TimeTask extends TimerTask {
@@ -51,6 +55,31 @@ public class SensorsTemperature extends CoapResource {
 
 			// Call changed to notify subscribers
 			if (Math.round(temp)!=prev) changed();
+			
+			// adjust vent covers
+			if (PowerRelay.getRelay()) {
+				if (AcVent.getOpened()==0) {
+	
+					float diff = Math.abs(temp - AcTemperature.getTarget());
+					if (diff > 5f) {
+						Airconditioner.setVent(1, false);
+						Airconditioner.setVent(2, true);
+						Airconditioner.setVent(3, false);
+					} else if (diff > 2f) {
+						Airconditioner.setVent(1, true);
+						Airconditioner.setVent(2, false);
+						Airconditioner.setVent(3, true);
+					} else if (diff < 1f) {
+						Airconditioner.setVent(1, true);
+						Airconditioner.setVent(2, true);
+						Airconditioner.setVent(3, true);
+					}
+				}
+			} else {
+				Airconditioner.setVent(1, true);
+				Airconditioner.setVent(2, true);
+				Airconditioner.setVent(3, true);
+			}
 			
 			Airconditioner.notifyText(new DecimalFormat("Sen 0.0°C").format(temp));
 		}

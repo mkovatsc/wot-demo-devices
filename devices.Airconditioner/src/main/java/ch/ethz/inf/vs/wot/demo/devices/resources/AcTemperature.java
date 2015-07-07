@@ -23,7 +23,7 @@ public class AcTemperature extends CoapResource {
 		getAttributes().addResourceType("ucum:Cel"); // see unitsofmeasure.org
 		getAttributes().addInterfaceDescription("core#a");
 		getAttributes().setObservable();
-
+		
 		setObservable(true);
 	}
 
@@ -46,12 +46,35 @@ public class AcTemperature extends CoapResource {
 			return;
 		}
 		
+		if (!PowerRelay.getRelay()) {
+			exchange.respond(SERVICE_UNAVAILABLE, "turn on first");
+			return;
+		}
+		
 		float set = Float.parseFloat(pl);
 		if (set < 15f) set = 15f;
 		if (set > 28f) set = 28f;
 		
 		target = set;
 		exchange.respond(CHANGED);
+		
+		// auto-open if vent mode unspecified
+		if (AcVent.getOpened()==0) {
+			float diff = Math.abs(SensorsTemperature.getTemp() - target);
+			if (diff > 5f) {
+				Airconditioner.setVent(1, false);
+				Airconditioner.setVent(2, true);
+				Airconditioner.setVent(3, false);
+			} else if (diff > 2f) {
+				Airconditioner.setVent(1, true);
+				Airconditioner.setVent(2, false);
+				Airconditioner.setVent(3, true);
+			} else if (diff < 1f) {
+				Airconditioner.setVent(1, true);
+				Airconditioner.setVent(2, true);
+				Airconditioner.setVent(3, true);
+			}
+		}
 		
 		Airconditioner.notifyText(new DecimalFormat("To 0.0°C").format(target));
 		
