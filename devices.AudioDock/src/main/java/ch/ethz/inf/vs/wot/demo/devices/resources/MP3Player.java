@@ -41,7 +41,9 @@ public class MP3Player {
 	
 	public void setMP3(URL uri) {
 		try {
+			stop();
 			this.mp3 = new File(uri.toURI());
+			play();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,19 +66,25 @@ public class MP3Player {
 	}
 
 	public int pause() {
-		try {
-			stopped = FIS.available();
-			player.close();
-			AudioDock.setSpeakers(false);
-			FIS = null;
-			BIS = null;
-			player = null;
-			if (valid)
-				canResume = true;
+		if (FIS!=null) {
+			try {
+				stopped = FIS.available();
+				player.close();
+				AudioDock.setSpeakers(false);
+				FIS = null;
+				BIS = null;
+				player = null;
+				if (valid)
+					canResume = true;
+				return stopped;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return -1;
+			}
+		} else if (canResume) {
 			return stopped;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return -1;
+		} else {
+			return 0;
 		}
 	}
 
@@ -87,6 +95,10 @@ public class MP3Player {
 			canResume = false;
 	}
 
+	public boolean play() {
+		return play(-1);
+	}
+	
 	public boolean play(int pos) {
 		valid = true;
 		canResume = false;
@@ -131,4 +143,7 @@ public class MP3Player {
 		}
 	}
 
+	public void volume(int vol) {
+		
+	}
 }

@@ -117,7 +117,6 @@ public class AudioDock extends CoapServer {
 		add(new CoapResource("audio").add(
 			new AudioPlaying(),
 			new AudioNow(),
-			new AudioVolume(),
 			new AudioInput()));
 
 		// GUI

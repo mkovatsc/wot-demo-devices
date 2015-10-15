@@ -53,28 +53,25 @@ public class AudioPlaying extends CoapResource {
 		changed();
 	}
 	
-	private boolean play() {
+	private void play() {
 		if (player.canResume()) {
 			player.resume();
 		} else {
-			player.play(-1);
+			player.stop();
+			player.play();
 		}
-		return true;
 	}
-	private boolean pause() {
+	private void pause() {
 		player.pause();
-		return true;
 	}
-	private boolean stop() {
+	private void stop() {
 		player.stop();
-		return true;
 	}
-	private boolean goToPos(int position) {
+	private void goToPos(int position) {
 		
 		System.out.println("goto: " + position);
 		
 		player.stop();
 		player.play(position);
-		return true;
 	}
 }
