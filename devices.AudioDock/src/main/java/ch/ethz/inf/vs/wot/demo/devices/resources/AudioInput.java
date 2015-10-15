@@ -1,5 +1,7 @@
 package ch.ethz.inf.vs.wot.demo.devices.resources;
 
+import java.util.Arrays;
+
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
@@ -8,7 +10,8 @@ import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
 
 public class AudioInput extends CoapResource {
 	
-	private static String in = "USB";
+	private static String[] inputs = {"internal", "USB", "aux", "optical"};
+	private static String in = inputs[0];
 	
 	public static String getInput() {
 		return in;
@@ -38,9 +41,10 @@ public class AudioInput extends CoapResource {
 		
 		in = exchange.getRequestText();
 		
-		// hope it does not end with '/'...
-		if (in.startsWith("http")) AudioPlaying.setNow(in.substring(in.lastIndexOf('/')+1));
-		else AudioPlaying.setNow("Unknown artist");
+		if (!Arrays.asList(inputs).contains(in)) {
+			exchange.respond(BAD_REQUEST, Arrays.toString(inputs));
+			return;
+		}
 
 		// complete the request
 		exchange.respond(CHANGED);

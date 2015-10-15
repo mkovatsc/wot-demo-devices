@@ -1,5 +1,7 @@
 package ch.ethz.inf.vs.wot.demo.devices;
 
+import ch.ethz.inf.vs.wot.demo.devices.resources.AudioNow;
+import ch.ethz.inf.vs.wot.demo.devices.resources.AudioPlaying;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceManufacturer;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceModel;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceName;
@@ -55,6 +57,9 @@ public class AudioDock extends CoapServer {
 	private static ScheduledThreadPoolExecutor tasks = new ScheduledThreadPoolExecutor(1);
 	private static ScheduledFuture<?> notifyHandle = null;
 	
+	public static void setLight(boolean on) {
+		audio.repaint();
+	}
 	public static void setSpeakers(boolean on) {
 		if (on) {
 			speaker1.setVisible(true);
@@ -109,9 +114,11 @@ public class AudioDock extends CoapServer {
 			new PowerInstantaneous(),
 			new PowerCumulative(),
 			new PowerRelay()));
-		add(new CoapResource("audio").add(		
+		add(new CoapResource("audio").add(
+			new AudioPlaying(),
+			new AudioNow(),
 			new AudioVolume(),
-			new AudioInput()));		
+			new AudioInput()));
 
 		// GUI
 		audio = new DevicePanel(getClass().getResourceAsStream("audio_640.png"), 640, 287) {

@@ -7,8 +7,6 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DynamicDeviceSemantics extends CoapResource {
 
