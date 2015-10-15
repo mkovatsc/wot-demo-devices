@@ -41,9 +41,7 @@ public class MP3Player {
 	
 	public void setMP3(URL uri) {
 		try {
-			stop();
 			this.mp3 = new File(uri.toURI());
-			play();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,6 +121,7 @@ public class MP3Player {
 			}).start();
 		} catch (Exception e) {
 			System.err.println("Error playing mp3 file");
+			e.printStackTrace();
 			valid = false;
 		}
 		return valid;

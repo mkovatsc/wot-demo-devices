@@ -46,7 +46,10 @@ public class AudioNow extends CoapResource {
 		} else {
 			song = exchange.getRequestText();
 			exchange.respond(CHANGED);
+
+			AudioPlaying.player.stop();
 			AudioPlaying.player.setMP3(getClass().getResource(song));
+			AudioPlaying.player.play();
 			changed();
 		}
 	}

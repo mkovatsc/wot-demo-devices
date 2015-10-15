@@ -7,11 +7,11 @@ import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceModel;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceName;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceSemantics;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceSerial;
+import ch.ethz.inf.vs.wot.demo.devices.resources.DynamicDeviceSemantics;
 import ch.ethz.inf.vs.wot.demo.devices.resources.PowerCumulative;
 import ch.ethz.inf.vs.wot.demo.devices.resources.PowerInstantaneous;
 import ch.ethz.inf.vs.wot.demo.devices.resources.PowerRelay;
 import ch.ethz.inf.vs.wot.demo.devices.resources.AudioInput;
-import ch.ethz.inf.vs.wot.demo.devices.resources.AudioVolume;
 import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
 import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
 
@@ -58,9 +58,12 @@ public class AudioDock extends CoapServer {
 	private static ScheduledFuture<?> notifyHandle = null;
 	
 	public static void setLight(boolean on) {
+		if (audio==null) return;
 		audio.repaint();
 	}
 	public static void setSpeakers(boolean on) {
+		if (speaker1==null || speaker2==null) return;
+		
 		if (on) {
 			speaker1.setVisible(true);
 			speaker2.setVisible(true);
@@ -105,6 +108,7 @@ public class AudioDock extends CoapServer {
 		super(ports);
 		// add resources to the server
 		add(new DeviceSemantics());
+		add(new DynamicDeviceSemantics());
 		add(new CoapResource("dev").add(
 			new DeviceManufacturer(),
 			new DeviceModel(),

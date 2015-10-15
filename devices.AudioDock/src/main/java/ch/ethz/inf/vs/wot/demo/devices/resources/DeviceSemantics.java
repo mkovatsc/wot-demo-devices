@@ -11,7 +11,7 @@ import java.io.StringWriter;
 public class DeviceSemantics extends CoapResource {
 
     public DeviceSemantics() {
-        super("semantics");
+        super("restdesc");
         getAttributes().addResourceType("semantics");
     }
 

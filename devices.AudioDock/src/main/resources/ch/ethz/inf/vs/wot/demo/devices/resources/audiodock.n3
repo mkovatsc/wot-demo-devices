@@ -9,6 +9,29 @@
 @prefix st: <http://purl.org/restdesc/states#>.
 @prefix ex: <http://example.org/#>.
 
+# Play
+# st:replaced :playing
+# PUT /audio/play "play"
+
+# Pause
+# st:remove :playing; st:add :paused
+# PUT /audio/play "pause"
+
+# Unpause
+# st:remove :paused; st:add :playing
+# PUT /audio/play "play"
+
+# Resume
+# st:replaced :playing
+# PUT /audio/play ?position
+
+# Stop
+# st:replaced :stopped
+# PUT /audio/play "stop"
+
+#Position
+
+# Set Song
 {
 	?mediaplayer a dbpedia:Media_player;
 		geonames:locatedIn ?mediaplayerPlace.
@@ -22,11 +45,40 @@
 =>
 {
 	_:request http:methodName "PUT";
-		http:requestURI (?mediaplayer "/audio/in");
-		http:reqBody ("http://streams.example.com/song/" ?new).
+		http:requestURI (?mediaplayer "/audio/now");
+		http:reqBody (?new).
 
 	[ a st:StateChange;
-		st:added   { ?mediaplayerPlace ex:musicPlaying ?new. };
-		st:removed { ?mediaplayerPlace ex:musicPlaying ?old. };
+		st:replaced { ?mediaplayerPlace ex:musicPlaying ?new. };
 		st:parent ?state ].
+}.
+
+# Switch on
+{
+	?state a st:State;
+	log:includes {local:state :power :off.}.
+	?url a local:url.
+} => {
+	_:request http:methodName "PUT";
+	http:requestURI (?url "/pwr/switch");
+	http:reqBody "1".
+
+	[ a st:StateChange;
+	st:replaced { local:state :power :on.};
+	st:parent ?state ].
+}.
+
+# Switch off
+{
+	?state a st:State;
+	log:includes {local:state :power :on.}.
+	?url a local:url.
+} => {
+	_:request http:methodName "PUT";
+	http:requestURI (?url "/pwr/switch");
+	http:reqBody "0".
+
+	[ a st:StateChange;
+	st:replaced { local:state :power :off.};
+	st:parent ?state ].
 }.
