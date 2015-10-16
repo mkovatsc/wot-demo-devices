@@ -45,11 +45,14 @@ public class LIFXBulb {
     public void setColor(Color color) {
     	float[] hsv = new float[3];
     	Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsv);
+    	System.out.println(hsv[0]);
+    	System.out.println(hsv[1]);
+    	System.out.println(hsv[2]);
     	
-    	setColor((int)hsv[0], (int)(hsv[1]*100), (int)(hsv[2]*100), temperature, 0);
+    	setColor(hsv[0], hsv[1], hsv[2], temperature, 0);
     }
 
-    public void setColor(int hue, int saturation, int brightness, int kelvin, int delay) {
+    public void setColor(float hue, float saturation, float brightness, int kelvin, int delay) {
         try {
             byte [] messageData = new LIFXSetColorRequest(address, delay, hue, saturation, brightness, kelvin).generatePacket();
             StringBuilder sb = new StringBuilder();

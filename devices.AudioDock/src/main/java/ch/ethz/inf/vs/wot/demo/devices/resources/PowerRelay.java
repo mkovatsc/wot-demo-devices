@@ -40,11 +40,9 @@ public class PowerRelay extends CoapResource {
 		
 		String pl = exchange.getRequestText();
 		if (pl.equals("true") || pl.equals("on") || pl.equals("1")) {
-			if (on==true) return;
 			on = true;
 			AudioDock.setLight(true);
 		} else if (pl.equals("false") || pl.equals("off") || pl.equals("0")) {
-			if (on==false) return;
 			on = false;
 			AudioPlaying.player.stop();
 			AudioDock.setLight(false);

@@ -7,12 +7,12 @@ import java.nio.ByteOrder;
  * Created by wilhelmk on 01/10/15.
  */
 class LIFXSetColorRequest extends LIFXRequest {
-    private int hue;
-    private int saturation;
-    private int brightness;
+    private float hue;
+    private float saturation;
+    private float brightness;
     private int kelvin;
 
-    public LIFXSetColorRequest(byte [] address, int delay, int hue, int saturation, int brightness, int kelvin) {
+    public LIFXSetColorRequest(byte [] address, int delay, float hue, float saturation, float brightness, int kelvin) {
         super(address, delay);
         this.hue = hue;
         this.saturation = saturation;
@@ -20,9 +20,9 @@ class LIFXSetColorRequest extends LIFXRequest {
         this.kelvin = kelvin;
     }
 
-    public int getHue() { return hue; }
-    public int getSaturation() { return saturation; }
-    public int getBrightness() { return brightness; }
+    public float getHue() { return hue; }
+    public float getSaturation() { return saturation; }
+    public float getBrightness() { return brightness; }
     public int getKelvin() { return kelvin; }
 
     @Override
@@ -32,11 +32,11 @@ class LIFXSetColorRequest extends LIFXRequest {
         // Add reserved field
         byteBuffer.put((byte) 0x00);
         // Add color in HSBK (hue)
-        byteBuffer.putShort((short) ((float) hue / 360.0 * 65535.0));
+        byteBuffer.putShort((short) ((float) hue * 65535.0));
         // Add saturation
-        byteBuffer.putShort((short)((float) saturation/100*65535.0));
+        byteBuffer.putShort((short)((float) saturation * 65535.0));
         // Add brightness
-        byteBuffer.putShort((short)((float) brightness/100*65535.0));
+        byteBuffer.putShort((short)((float) brightness * 65535.0));
         // Set Kelvin
         byteBuffer.putShort((short) kelvin);
         // Set delay

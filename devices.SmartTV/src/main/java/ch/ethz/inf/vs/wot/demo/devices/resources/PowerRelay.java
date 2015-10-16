@@ -42,15 +42,13 @@ public class PowerRelay extends CoapResource {
 		
 		String pl = exchange.getRequestText();
 		if (pl.equals("true") || pl.equals("on") || pl.equals("1")) {
-			if (on==true) return;
+			if (on==false) SmartTV.notifyText("ON");
 			on = true;
 			SmartTV.setColor(Color.white);
-			SmartTV.notifyText("ON");
 		} else if (pl.equals("false") || pl.equals("off") || pl.equals("0")) {
-			if (on==false) return;
+			if (on==true) SmartTV.notifyText("OFF");
 			on = false;
 			SmartTV.setColor(Color.black);
-			SmartTV.notifyText("OFF");
 		} else {
 			exchange.respond(BAD_REQUEST, "use true/false, on/off, or 1/0");
 			return;

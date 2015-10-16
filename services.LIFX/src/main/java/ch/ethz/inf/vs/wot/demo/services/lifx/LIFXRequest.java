@@ -2,7 +2,6 @@ package ch.ethz.inf.vs.wot.demo.services.lifx;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 
 /**
  * Created by wilhelmk on 01/10/15.

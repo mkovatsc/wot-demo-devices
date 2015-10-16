@@ -39,13 +39,11 @@ public class PowerRelay extends CoapResource {
 		
 		String pl = exchange.getRequestText();
 		if (pl.equals("true") || pl.equals("on") || pl.equals("1")) {
-			if (on==true) return;
+			if (on==false) Airconditioner.notifyText("ON");
 			on = true;
-			Airconditioner.notifyText("ON");
 		} else if (pl.equals("false") || pl.equals("off") || pl.equals("0")) {
-			if (on==false) return;
+			if (on==true) Airconditioner.notifyText("OFF");
 			on = false;
-			Airconditioner.notifyText("OFF");
 		} else {
 			exchange.respond(BAD_REQUEST, "use true/false, on/off, or 1/0");
 			return;

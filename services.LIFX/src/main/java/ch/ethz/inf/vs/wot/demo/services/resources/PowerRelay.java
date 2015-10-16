@@ -40,16 +40,14 @@ public class PowerRelay extends CoapResource {
 		
 		String pl = exchange.getRequestText();
 		if (pl.equals("true") || pl.equals("on") || pl.equals("1")) {
-			if (on==true) return;
 			on = true;
 		} else if (pl.equals("false") || pl.equals("off") || pl.equals("0")) {
-			if (on==false) return;
 			on = false;
 		} else {
 			exchange.respond(BAD_REQUEST, "use true/false, on/off, or 1/0");
 			return;
 		}
-
+		
 		LIFX.bulb.setPower(on, 0);
 		
 		// complete the request

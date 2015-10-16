@@ -39,10 +39,10 @@ public class LEDColor extends CoapResource {
 		try {
 			color = Color.decode(exchange.getRequestText());
 			
+			LIFX.bulb.setColor(color);
+			
 			// complete the request
 			exchange.respond(CHANGED);
-			
-			LIFX.bulb.setColor(color);
 		
 			changed();
 			return;

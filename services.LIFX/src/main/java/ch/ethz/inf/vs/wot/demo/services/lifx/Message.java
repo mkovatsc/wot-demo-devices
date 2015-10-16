@@ -1,7 +1,5 @@
 package ch.ethz.inf.vs.wot.demo.services.lifx;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 // Message class
