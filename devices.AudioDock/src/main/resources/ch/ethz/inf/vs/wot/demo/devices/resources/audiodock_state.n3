@@ -1,11 +1,19 @@
 # Audiodock (State)
-@prefix local: <local#>.
 @prefix : <ex#>.
+@prefix local: <local#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix geonames: <http://www.geonames.org/ontology#>.
+@prefix http: <http://www.w3.org/2011/http#>.
 @prefix log: <http://www.w3.org/2000/10/swap/log#>.
 @prefix st: <http://purl.org/restdesc/states#>.
+@prefix ex: <http://example.org/#>.
+
 
 local:state :power [[POWER_STATE]].
 
 local:state :input [[INPUT_STATE]].
 
-local:state :song [[SONG_STATE]].
+[[SONG_STATE]]
+
+

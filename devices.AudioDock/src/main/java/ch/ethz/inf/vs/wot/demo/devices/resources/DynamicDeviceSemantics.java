@@ -39,8 +39,19 @@ public class DynamicDeviceSemantics extends CoapResource {
 			IOUtils.copy(getClass().getResourceAsStream("audiodock_state.n3"), writer);
 			String theString = writer.toString();
 			theString = theString.replace("[[POWER_STATE]]",PowerRelay.getRelay()?":on":":off");
-			theString = theString.replace("[[INPUT_STATE]]", AudioInput.getInput());
-			theString = theString.replace("[[SONG_STATE]]", AudioNow.getSong());
+			theString = theString.replace("[[INPUT_STATE]]", "\""+AudioInput.getInput()+"\"");
+			String song = AudioPlaying.player.getSong();
+			String song_state ="";
+			if(song !=null &&  AudioPlaying.player.getState().equals("play")) {
+				song_state = "\n" +
+						"local:song a dbpedia:Song;\n" +
+						"       :name \""+song+"\".\n" +
+						"       \n" +
+						"local:state :song local:song.\n";
+
+			}
+			song_state += "local:state  :state :"+  AudioPlaying.player.getState() +".";
+			theString = theString.replace("[[SONG_STATE]]", song_state);
 			exchange.respond(theString);
 		} catch (IOException e) {
 			exchange.reject();

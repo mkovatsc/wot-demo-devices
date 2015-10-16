@@ -20,6 +20,8 @@ public class MP3Player {
 	private int total;
 	private int stopped;
 	private boolean valid;
+	private String song;
+	private String state;
 
 	public MP3Player() {
 		player = null;
@@ -29,6 +31,7 @@ public class MP3Player {
 		total = 0;
 		stopped = 0;
 		canResume = false;
+		setState("stop");
 	}
 
 	public boolean canResume() {
@@ -74,12 +77,14 @@ public class MP3Player {
 				player = null;
 				if (valid)
 					canResume = true;
+				setState("pause");
 				return stopped;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return -1;
 			}
 		} else if (canResume) {
+			setState("pause");
 			return stopped;
 		} else {
 			return 0;
@@ -124,6 +129,9 @@ public class MP3Player {
 			e.printStackTrace();
 			valid = false;
 		}
+		if(valid){
+			setState("play");
+		}
 		return valid;
 	}
 	
@@ -140,9 +148,29 @@ public class MP3Player {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		setState("stop");
 	}
 
 	public void volume(int vol) {
 		
+	}
+
+	public void setSong(String song) {
+		this.song =song;
+		setMP3(getClass().getResource(song));
+		DynamicDeviceSemantics.getInstance().changed();
+	}
+
+	public String getSong() {
+		return song;
+	}
+
+	public String getState() {
+		return this.state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+		DynamicDeviceSemantics.getInstance().changed();
 	}
 }

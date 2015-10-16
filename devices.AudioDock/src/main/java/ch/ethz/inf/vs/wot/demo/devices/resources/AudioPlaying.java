@@ -28,10 +28,10 @@ public class AudioPlaying extends CoapResource {
 	@Override
 	public void handlePUT(CoapExchange exchange) {
 
-		if (!exchange.getRequestOptions().isContentFormat(TEXT_PLAIN)) {
-			exchange.respond(BAD_REQUEST, "text/plain only");
-			return;
-		}
+//		if (!exchange.getRequestOptions().isContentFormat(TEXT_PLAIN)) {
+//			exchange.respond(BAD_REQUEST, "text/plain only");
+//			return;
+//		}
 		
 		if (!PowerRelay.getRelay()) {
 			exchange.respond(SERVICE_UNAVAILABLE, "turn on first");

@@ -36,10 +36,10 @@ public class AudioNow extends CoapResource {
 	@Override
 	public void handlePUT(CoapExchange exchange) {
 
-		if (!exchange.getRequestOptions().isContentFormat(TEXT_PLAIN)) {
-			exchange.respond(BAD_REQUEST, "text/plain only");
-			return;
-		}
+//		if (!exchange.getRequestOptions().isContentFormat(TEXT_PLAIN)) {
+//			exchange.respond(BAD_REQUEST, "text/plain only");
+//			return;
+//		}
 		
 		if (!Arrays.asList(songs).contains(exchange.getRequestText())) {
 			exchange.respond(BAD_REQUEST, Arrays.toString(songs));
@@ -48,8 +48,8 @@ public class AudioNow extends CoapResource {
 			exchange.respond(CHANGED);
 
 			AudioPlaying.player.stop();
-			AudioPlaying.player.setMP3(getClass().getResource(song));
-			AudioPlaying.player.play();
+			AudioPlaying.player.setSong(song);
+			//AudioPlaying.player.play();
 			changed();
 		}
 	}

@@ -33,10 +33,10 @@ public class PowerRelay extends CoapResource {
 	@Override
 	public void handlePUT(CoapExchange exchange) {
 
-		if (!exchange.getRequestOptions().isContentFormat(TEXT_PLAIN)) {
-			exchange.respond(BAD_REQUEST, "text/plain only");
-			return;
-		}
+//		if (!exchange.getRequestOptions().isContentFormat(TEXT_PLAIN)) {
+//			exchange.respond(BAD_REQUEST, "text/plain only");
+//			return;
+//		}
 		
 		String pl = exchange.getRequestText();
 		if (pl.equals("true") || pl.equals("on") || pl.equals("1")) {

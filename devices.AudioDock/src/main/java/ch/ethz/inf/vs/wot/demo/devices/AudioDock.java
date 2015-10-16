@@ -108,7 +108,7 @@ public class AudioDock extends CoapServer {
 		super(ports);
 		// add resources to the server
 		add(new DeviceSemantics());
-		add(new DynamicDeviceSemantics());
+		add(DynamicDeviceSemantics.getInstance());
 		add(new CoapResource("dev").add(
 			new DeviceManufacturer(),
 			new DeviceModel(),

@@ -32,26 +32,106 @@
 #Position
 
 # Set Song
+
+local:musicplayer a dbpedia:Media_player.
+
+local:devicelocation a :question;
+	:text ("Where is the music player located?");
+	:replyType :location.
+
+local:musicplayer :hasState local:state.
+
 {
-	?mediaplayer a dbpedia:Media_player;
-		geonames:locatedIn ?mediaplayerPlace.
+	local:devicelocation :hasAnswer ?a
 
+} => {
+	local:musicplayer geonames:locatedIn  ?a.
+}.
+
+
+{
+	local:musicplayer geonames:locatedIn  ?a.
+
+} => {
+	local:devicelocation :hasAnswer ?a
+}.
+ 
+
+ 
+
+
+#Configure Song
+{
+	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
+
+	?song a dbpedia:Song;
+       :name ?new;
+       :postion ?x.
+  
 	?state a st:State.
-	
-	[] e:optional { ?state log:includes { ?mediaplayerPlace ex:musicPlaying ?old. }. }.
+	?state log:includes { local:state :power :on. }.
+	[] e:optional { ?state log:includes { ?mediaplayerPlace ex:song ?old. }. }.
 
-	?new a dbpedia:Song.
+	?url a local:url.
 }
 =>
 {
 	_:request http:methodName "PUT";
-		http:requestURI (?mediaplayer "/audio/now");
-		http:reqBody (?new).
+		http:requestURI (?url "/audio/now");
+	http:reqBody ?new.
 
 	[ a st:StateChange;
-		st:replaced { ?mediaplayerPlace ex:musicPlaying ?new. };
+		st:replaced { ?mediaplayerPlace :song ?song. };
 		st:parent ?state ].
 }.
+
+
+{
+	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
+ 
+	?state a st:State.
+	?state log:includes { local:state :power :on. ?mediaplayerPlace :song ?song. }. 
+
+	?url a local:url.
+   ?songState a :PaybackState; :command ?s.
+}
+=>
+{
+	_:request http:methodName "PUT";
+		http:requestURI (?url "/audio/play");
+	http:reqBody  ?s.
+
+	[ a st:StateChange;
+		st:replaced { ?mediaplayerPlace :songState ?songState};
+		st:parent ?state ].
+}.
+
+
+{
+	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
+ 
+  
+	?song a dbpedia:Song;
+       :postion ?x.
+  
+	?state a st:State.
+	?state log:includes { local:state :power :on. ?mediaplayerPlace :song ?song. }. 
+
+	?url a local:url. 
+}
+=>
+{
+	_:request http:methodName "PUT";
+		http:requestURI (?url "/audio/play");
+	http:reqBody  ?x.
+
+	[ a st:StateChange;
+		st:replaced { ?mediaplayerPlace :songState :play};
+		st:parent ?state ].
+}.
+
+
+ 
 
 # Switch on
 {
@@ -82,3 +162,48 @@
 	st:replaced { local:state :power :off.};
 	st:parent ?state ].
 }.
+
+
+
+# Initial state
+
+{
+  
+	local:state :power ?powerstate.
+
+}=>{
+
+ 
+  { local:state :power ?powerstate.} a st:InitialState.
+}.
+
+
+{
+	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
+	 local:state :song ?song. 
+   local:state :state ?state.
+	 
+}
+=>
+{   
+  { ?mediaplayerPlace :song ?song. ?mediaplayerPlace :songState ?state} a st:InitialState.
+}.
+
+
+
+# Song read
+{
+	?url a local:url.
+   local:state :song ?song.
+} => {
+	_:request http:methodName "GET";
+	http:requestURI (?url "/audio/play");
+     http:resp ?pos.
+	?song :postion ?pos.
+}.
+
+
+
+:stop a :PaybackState; :command "stop".
+:pause a :PaybackState; :command "pause".
+
