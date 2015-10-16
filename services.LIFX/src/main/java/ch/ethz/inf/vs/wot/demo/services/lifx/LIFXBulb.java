@@ -9,11 +9,17 @@ import java.net.UnknownHostException;
 public class LIFXBulb {
 
     private byte [] address;
+    private InetAddress ipBroadcast;
     private String label;
     private int temperature = 3500;
 
-    public LIFXBulb(String macAddress) {
+    public LIFXBulb(String macAddress, String network) {
         label = macAddress;
+        try {
+			ipBroadcast = InetAddress.getByName(network);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
         // Convert to big-endian address
         String[] macAddressParts = macAddress.split(":");
         byte[] bigEndianAddress = new byte[8];
@@ -45,10 +51,6 @@ public class LIFXBulb {
     public void setColor(Color color) {
     	float[] hsv = new float[3];
     	Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsv);
-    	System.out.println(hsv[0]);
-    	System.out.println(hsv[1]);
-    	System.out.println(hsv[2]);
-    	
     	setColor(hsv[0], hsv[1], hsv[2], temperature, 0);
     }
 
@@ -60,10 +62,7 @@ public class LIFXBulb {
                 sb.append(String.format("%02x ", byteValue));
             }
             String message = sb.toString();
-            InetAddress ipAddress = InetAddress.getByName("192.168.1.255");
-            send(new Message(messageData, ipAddress, 56700));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            send(new Message(messageData, ipBroadcast, 56700));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,11 +76,7 @@ public class LIFXBulb {
                 sb.append(String.format("%02x ", byteValue));
             }
             String message = sb.toString();
-
-            InetAddress ipAddress = InetAddress.getByName("192.168.1.255");
-            send(new Message(messageData, ipAddress, 56700));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            send(new Message(messageData, ipBroadcast, 56700));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,10 +90,7 @@ public class LIFXBulb {
                 sb.append(String.format("%02x ", byteValue));
             }
             String message = sb.toString();
-            InetAddress ipAddress = InetAddress.getByName("192.168.3.255");
-            send(new Message(messageData, ipAddress, 56700));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            send(new Message(messageData, ipBroadcast, 56700));
         } catch (Exception e) {
             e.printStackTrace();
         }

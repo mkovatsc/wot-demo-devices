@@ -20,6 +20,9 @@ import ch.ethz.inf.vs.wot.demo.services.resources.*;
  */
 public class LIFX extends CoapServer {
 
+	public static final String LIFX_BULB_MAC = "D0:73:D5:00:30:EE";
+	public static final String WIFI_BROADCAST_ADDRESS = "192.168.1.255";
+	
 	private static final String DEMO_IP = "localhost";
 	// since we register with the RD, we can use a random port
 	private static int port = 0;
@@ -28,7 +31,7 @@ public class LIFX extends CoapServer {
 	public static final int ERR_INIT_FAILED = 1;
 	private String id = UUID.randomUUID().toString();
 
-	public static LIFXBulb bulb = new LIFXBulb("D0:73:D5:00:30:EE");
+	public static LIFXBulb bulb = new LIFXBulb(LIFX_BULB_MAC, WIFI_BROADCAST_ADDRESS);
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
