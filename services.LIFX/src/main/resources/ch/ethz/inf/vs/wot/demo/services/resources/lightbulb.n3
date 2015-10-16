@@ -1,0 +1,32 @@
+# Lightbulb
+@prefix : <ex#>.
+@prefix local: <local#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix geonames: <http://www.geonames.org/ontology#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix st: <http://purl.org/restdesc/states#>.
+@prefix ex: <http://example.org/#>.
+
+{
+	?mediaplayer a dbpedia:Media_player;
+		geonames:locatedIn ?mediaplayerPlace.
+
+	?state a st:State.
+	
+	[] e:optional { ?state log:includes { ?mediaplayerPlace ex:musicPlaying ?old. }. }.
+
+	?new a dbpedia:Song.
+}
+=>
+{
+	_:request http:methodName "PUT";
+		http:requestURI (?mediaplayer "/audio/in");
+		http:reqBody ("http://streams.example.com/song/" ?new).
+
+	[ a st:StateChange;
+		st:added   { ?mediaplayerPlace ex:musicPlaying ?new. };
+		st:removed { ?mediaplayerPlace ex:musicPlaying ?old. };
+		st:parent ?state ].
+}.
