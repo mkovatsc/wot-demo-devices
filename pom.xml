@@ -24,6 +24,7 @@
 		<module>devices.Airconditioner</module>
 		<module>services.Converter</module>
 		<module>services.Ambient</module>
+		<module>services.LIFX</module>
 	</modules>
 
 </project>
