@@ -1,29 +1,13 @@
 package ch.ethz.inf.vs.wot.demo.devices.utils;
 
+import ch.ethz.inf.vs.semantics.parser.elements.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import ch.ethz.inf.vs.semantics.parser.elements.Formula;
-import ch.ethz.inf.vs.semantics.parser.elements.Iri;
-import ch.ethz.inf.vs.semantics.parser.elements.Literal;
-import ch.ethz.inf.vs.semantics.parser.elements.N3Document;
-import ch.ethz.inf.vs.semantics.parser.elements.N3Element;
-import ch.ethz.inf.vs.semantics.parser.elements.Prefix;
-import ch.ethz.inf.vs.semantics.parser.elements.RDFResource;
-import ch.ethz.inf.vs.semantics.parser.elements.Verb;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import javax.swing.BorderFactory;
-import javax.swing.JTextArea;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
 
 public class Question extends JPanel {
     

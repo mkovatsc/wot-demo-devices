@@ -1,13 +1,13 @@
 package ch.ethz.inf.vs.wot.demo.devices.resources;
 
-import java.text.DecimalFormat;
-
+import ch.ethz.inf.vs.wot.demo.devices.Airconditioner;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.devices.Airconditioner;
+import java.text.DecimalFormat;
+
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class AcTemperature extends CoapResource {
 	

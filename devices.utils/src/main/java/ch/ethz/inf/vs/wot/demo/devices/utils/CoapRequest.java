@@ -1,11 +1,10 @@
 package ch.ethz.inf.vs.wot.demo.devices.utils;
 
+import ch.ethz.inf.vs.semantics.parser.ExecutionPlan;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
-
-import ch.ethz.inf.vs.semantics.parser.ExecutionPlan;
 
 public class CoapRequest extends ExecutionPlan.Request {
     public CoapRequest(String id, ExecutionPlan.RequestValue method, ExecutionPlan.RequestValue uri, ExecutionPlan.RequestValue reqBody, ExecutionPlan.RequestValue resp) {

@@ -4,8 +4,8 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.CONTENT;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class DeviceSerial extends CoapResource {
 

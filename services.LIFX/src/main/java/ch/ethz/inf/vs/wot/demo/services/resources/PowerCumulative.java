@@ -1,14 +1,14 @@
 package ch.ethz.inf.vs.wot.demo.services.resources;
 
+import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.server.resources.CoapExchange;
+
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.server.resources.CoapExchange;
-
-import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.CONTENT;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class PowerCumulative extends CoapResource {
 	

@@ -1,10 +1,10 @@
 package ch.ethz.inf.vs.wot.demo.services.resources;
 
-import java.text.DecimalFormat;
-
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+
+import java.text.DecimalFormat;
 
 /**
  * @author Yassin N. Hassan

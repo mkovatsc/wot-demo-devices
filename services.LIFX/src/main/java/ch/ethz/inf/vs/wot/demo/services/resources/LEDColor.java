@@ -1,20 +1,22 @@
 package ch.ethz.inf.vs.wot.demo.services.resources;
 
-import java.awt.Color;
-
+import ch.ethz.inf.vs.wot.demo.services.LIFX;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.services.LIFX;
+import java.awt.*;
+
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class LEDColor extends CoapResource {
 	
 	private static Color color = Color.white;
+	private final LIFX lifx;
 
-	public LEDColor() {
+	public LEDColor(LIFX lifx) {
 		super("color");
+		this.lifx = lifx;
 		getAttributes().setTitle("Color");
 		getAttributes().addResourceType("led:color");
 		getAttributes().addInterfaceDescription("core#p");
@@ -38,8 +40,9 @@ public class LEDColor extends CoapResource {
 		
 		try {
 			color = Color.decode(exchange.getRequestText());
-			
-			LIFX.bulb.setColor(color);
+
+			lifx.bulb.setColor(color);
+			lifx.bulb.setColor(color);
 			
 			// complete the request
 			exchange.respond(CHANGED);

@@ -1,14 +1,14 @@
 package ch.ethz.inf.vs.wot.demo.devices.resources;
 
+import ch.ethz.inf.vs.wot.demo.devices.AudioDock;
+import javazoom.jl.player.Player;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import ch.ethz.inf.vs.wot.demo.devices.AudioDock;
-import javazoom.jl.player.Player;
 
 public class MP3Player {
 
@@ -22,6 +22,7 @@ public class MP3Player {
 	private boolean valid;
 	private String song;
 	private String state;
+	private int lastPosition;
 
 	public MP3Player() {
 		player = null;
@@ -58,7 +59,7 @@ public class MP3Player {
 			} else if (canResume) {
 				return (total - stopped);
 			} else {
-				return 0;
+				return lastPosition;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -118,6 +119,7 @@ public class MP3Player {
 					try {
 						player.play();
 						AudioDock.setSpeakers(false);
+						stop();
 					} catch (Exception e) {
 						System.err.println("Error playing mp3 file");
 						valid = false;
@@ -138,6 +140,7 @@ public class MP3Player {
 	public void stop() {
 		if (player == null) return;
 		try {
+			lastPosition = getPosition();
 			stopped = 0;
 			canResume = false;
 			player.close();

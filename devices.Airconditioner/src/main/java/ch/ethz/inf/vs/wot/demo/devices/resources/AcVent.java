@@ -1,11 +1,11 @@
 package ch.ethz.inf.vs.wot.demo.devices.resources;
 
+import ch.ethz.inf.vs.wot.demo.devices.Airconditioner;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.devices.Airconditioner;
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class AcVent extends CoapResource {
 	

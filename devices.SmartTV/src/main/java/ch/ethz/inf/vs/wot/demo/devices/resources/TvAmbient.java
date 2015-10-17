@@ -1,16 +1,16 @@
 package ch.ethz.inf.vs.wot.demo.devices.resources;
 
-import java.awt.Color;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import ch.ethz.inf.vs.wot.demo.devices.SmartTV;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.Type;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.devices.SmartTV;
-import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.CONTENT;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class TvAmbient extends CoapResource {
 	

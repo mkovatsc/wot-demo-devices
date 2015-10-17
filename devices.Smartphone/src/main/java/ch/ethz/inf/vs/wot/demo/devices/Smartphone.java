@@ -1,25 +1,21 @@
 package ch.ethz.inf.vs.wot.demo.devices;
 
-import ch.ethz.inf.vs.wot.demo.devices.resources.*;
-import ch.ethz.inf.vs.wot.demo.devices.utils.CoapRequest;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
-import ch.ethz.inf.vs.wot.demo.devices.utils.Question;
 import ch.ethz.inf.vs.semantics.parser.ExecutionPlan;
 import ch.ethz.inf.vs.semantics.parser.N3Utils;
 import ch.ethz.inf.vs.semantics.parser.elements.N3Document;
 import ch.ethz.inf.vs.semantics.parser.elements.N3Element;
 import ch.ethz.inf.vs.semantics.parser.elements.RDFResource;
-
+import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceManufacturer;
+import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceModel;
+import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceName;
+import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceSerial;
+import ch.ethz.inf.vs.wot.demo.devices.utils.*;
 import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.coap.LinkFormat;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,14 +26,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.*;
-
 /**
  * The class ThermostatServer a sample thermostat
  */
 public class Smartphone extends CoapServer implements ActionListener {
 
-	private static final String DEMO_IP = "127.0.0.1";
+	private static final String DEMO_IP = DeviceServer.DEMO_IP;
 	// since we register with the RD, we can use a random port
 	private static int port = 0;
 	private static final long NOTIFICATION_DELAY = 3; // seconds

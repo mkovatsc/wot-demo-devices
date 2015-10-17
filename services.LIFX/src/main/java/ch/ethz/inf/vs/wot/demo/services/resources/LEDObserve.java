@@ -1,26 +1,24 @@
 package ch.ethz.inf.vs.wot.demo.services.resources;
 
-import java.awt.Color;
-
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapObserveRelation;
-import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.CoapResponse;
+import ch.ethz.inf.vs.wot.demo.services.LIFX;
+import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.services.LIFX;
+import java.awt.*;
+
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class LEDObserve extends CoapResource {
 	
 	private static String uri = "";
 	private static CoapClient client = null;
 	private static CoapObserveRelation handle = null;
+	private final LIFX lifx;
 
-	public LEDObserve() {
+	public LEDObserve(LIFX lifx) {
 		super("obs");
+		this.lifx = lifx;
 		getAttributes().setTitle("Follow color");
 		getAttributes().addResourceType("led:obs");
 		getAttributes().addInterfaceDescription("core#p");
@@ -56,7 +54,7 @@ public class LEDObserve extends CoapResource {
 				@Override
 				public void onLoad(CoapResponse response) {
 					try {
-						LIFX.bulb.setColor( Color.decode(response.getResponseText()) );
+						lifx.bulb.setColor( Color.decode(response.getResponseText()) );
 					} catch (NumberFormatException e) {
 						handle.proactiveCancel();
 					}

@@ -1,17 +1,13 @@
 package ch.ethz.inf.vs.wot.demo.devices.resources;
 
-import java.awt.Color;
-
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapObserveRelation;
-import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.CoapResponse;
+import ch.ethz.inf.vs.wot.demo.devices.Lightbulb;
+import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.devices.Lightbulb;
+import java.awt.*;
+
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class LEDObserve extends CoapResource {
 	

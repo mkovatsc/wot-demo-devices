@@ -1,8 +1,7 @@
 package ch.ethz.inf.vs.wot.demo.devices.utils;
 
-import java.awt.Color;
-
 import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class DeviceFrame extends JFrame {

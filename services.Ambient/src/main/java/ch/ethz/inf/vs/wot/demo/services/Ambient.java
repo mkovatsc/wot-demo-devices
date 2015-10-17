@@ -1,11 +1,12 @@
 package ch.ethz.inf.vs.wot.demo.services;
 
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.eclipse.californium.core.*;
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.WebLink;
 import org.eclipse.californium.core.coap.LinkFormat;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+
+import java.util.Set;
 
 /**
  * The class ConverterServer

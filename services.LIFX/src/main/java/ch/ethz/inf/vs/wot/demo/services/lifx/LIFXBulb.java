@@ -1,6 +1,6 @@
 package ch.ethz.inf.vs.wot.demo.services.lifx;
 
-import java.awt.Color;
+import java.awt.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;

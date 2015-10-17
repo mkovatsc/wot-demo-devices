@@ -1,22 +1,24 @@
 package ch.ethz.inf.vs.wot.demo.services.resources;
 
+import ch.ethz.inf.vs.wot.demo.services.LIFX;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.services.LIFX;
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class PowerRelay extends CoapResource {
 	
 	private static boolean on = false;
-	
+	private final LIFX lifx;
+
 	public static boolean getRelay() {
 		return on;
 	}
 
-	public PowerRelay() {
+	public PowerRelay(LIFX lifx) {
 		super("switch");
+		this.lifx = lifx;
 		getAttributes().setTitle("On/off switch");
 		getAttributes().addResourceType("switch");
 		getAttributes().addInterfaceDescription("core#a");
@@ -48,7 +50,7 @@ public class PowerRelay extends CoapResource {
 			return;
 		}
 		
-		LIFX.bulb.setPower(on, 0);
+		lifx.bulb.setPower(on, 0);
 		
 		// complete the request
 		exchange.respond(CHANGED);
