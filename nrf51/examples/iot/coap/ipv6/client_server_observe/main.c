@@ -90,6 +90,9 @@
                                 (addr).u8[8],(addr).u8[9],(addr).u8[10],(addr).u8[11],                          \
                                 (addr).u8[12],(addr).u8[13],(addr).u8[14],(addr).u8[15])
 
+
+#define PIR_HOLD_TIME 5
+
 typedef enum
 {
     LEDS_INACTIVE = 0,
@@ -125,6 +128,10 @@ static void notify_all_semantic_sts_subscribers(coap_msg_type_t type);
 static iot_interface_t           * mp_interface;
 																															 
 static uint16_t                  m_global_token_count = 0x0102;
+
+static uint8_t 								m_person_sensed = 0;
+static uint8_t 								m_pir_timer = 5;
+
 //static coap_option_t             m_registration_location;
 
 /**@brief Function for error handling, which is called when an error has occurred.
@@ -1230,8 +1237,11 @@ static void send_rd_message(enum RD_MESSAGE_KIND messageKind)
 							
 								//err_code = coap_message_opt_str_add(p_request, COAP_OPT_URI_QUERY, (uint8_t *)uri_query_lt, strlen(uri_query_lt));
                 //APP_ERROR_CHECK(err_code);
-
-								uint8_t payload[] = "</status>;obs,</statedesc>;ct=41;obs;rt=\"semantics\";if=\"sensor\",</restdesc>;ct=41;rt=\"semantics\"";
+								#if(FUNCTIONALITY == 1)
+									uint8_t payload[] = "</status>;obs;rt=\"switch\",</statedesc>;obs;rt=\"semantics\",</restdesc>;rt=\"semantics\"";
+								#else
+									uint8_t payload[] = "</status>;obs;rt=\"pir\",</statedesc>;obs;rt=\"semantics\",</restdesc>;rt=\"semantics\"";
+								#endif
                 err_code = coap_message_payload_set(p_request, payload, sizeof(payload)-1);
                 APP_ERROR_CHECK(err_code);
 
@@ -1305,12 +1315,18 @@ static void button_event_handler(uint8_t pin_no, uint8_t button_action)
 		if (pin_no == BUTTON_THREE)
 		{
 				if (button_action == APP_BUTTON_PUSH)
-					LEDS_OFF(LED_THREE);
+				{
+					LEDS_OFF(LED_FOUR);
+				}
 				else if (button_action == APP_BUTTON_RELEASE)
+				{
 					LEDS_ON(LED_THREE);
-				
-				notify_all_led3_subscribers(COAP_TYPE_NON);
-				notify_all_semantic_sts_subscribers(COAP_TYPE_NON);
+					LEDS_ON(LED_FOUR);
+					m_person_sensed = 1;
+					m_pir_timer = PIR_HOLD_TIME;
+					notify_all_led3_subscribers(COAP_TYPE_NON);
+					notify_all_semantic_sts_subscribers(COAP_TYPE_NON);
+				}
 		}	
 		#endif
 	
@@ -1453,6 +1469,21 @@ static void app_coap_time_tick(iot_timer_time_in_ms_t wall_clock_value)
 {
     // Pass a tick to coap in order to re-transmit any pending messages.
     (void)coap_time_tick();
+	
+		if(m_person_sensed==1)
+		{
+			if(m_pir_timer > 0)
+			{
+				m_pir_timer--;
+			}
+			else
+			{
+					LEDS_OFF(LED_THREE);
+					m_person_sensed = 0;
+					notify_all_led3_subscribers(COAP_TYPE_NON);
+					notify_all_semantic_sts_subscribers(COAP_TYPE_NON);
+			}
+		}
 
     // Check if any of the observers needs an update.
     static uint32_t msg_count = 0;

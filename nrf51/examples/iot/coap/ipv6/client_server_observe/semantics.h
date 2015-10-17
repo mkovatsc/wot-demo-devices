@@ -1,5 +1,5 @@
 #if(FUNCTIONALITY == 1)
-
+//Functionality is Switch
 static char  SEMANTICS_SWITCH[] = "# Switch\n\
 # Standard namespaces \n\
 @prefix local: <local#>.\n\
@@ -25,7 +25,7 @@ local:devicelocation a :question;\n\
 }.\n\
 {\n\
 	?state a st:State;\n\
-	log:includes {local:state :power :off}.\n\
+	log:includes {local:switch :power :off}.\n\
 	?url a local:url.\n\
 	local:switch :locatedAt ?location.\n\
 }\n\
@@ -35,12 +35,12 @@ local:devicelocation a :question;\n\
 	http:requestURI (?url \"/status\");\n\
 	http:reqBody \"1\".\n\
 	[ a st:StateChange;\n\
-	st:replaced { local:state :power :on.  };\n\
+	st:replaced { local:switch :power :on.  };\n\
 	st:parent ?state ].\n\
 }.\n\
 {\n\
 	?state a st:State;\n\
-	log:includes {local:state :power :on}.\n\
+	log:includes {local:switch :power :on}.\n\
 	?url a local:url.\n\
 	local:switch :locatedAt ?location.\n\
 }\n\
@@ -50,17 +50,17 @@ local:devicelocation a :question;\n\
 	http:requestURI (?url \"/status\");\n\
 	http:reqBody \"0\".\n\
 	[ a st:StateChange;\n\
-	st:replaced { local:state :power :off. };\n\
+	st:replaced { local:switch :power :off. };\n\
 	st:parent ?state ].\n\
 }.\n\
 {\n\
 	local:switch :locatedAt ?location.\n\
 	?state a st:State;\n\
-			log:notIncludes {local:state :power ?xx.}.\n\
+			log:notIncludes {local:switch :power ?xx.}.\n\
 	local:state :power ?powerstate.\n\
 }=>{\n\
 	[ a st:StateChange;\n\
-		st:replaced {local:state :power ?powerstate. };\n\
+		st:replaced {local:switch :power ?powerstate. };\n\
 		st:parent ?state ].\n\
 }.\n\
 {\n\
@@ -82,8 +82,8 @@ local:state :power :off.\n";
 
 #else
 
-
-static char  SEMANTICS_SWITCH[] = "# Switch\n\
+//Functionality is PIR
+static char  SEMANTICS_SWITCH[] = "# Presence\n\
 # Standard namespaces \n\
 @prefix local: <local#>.\n\
 @prefix : <ex#>.\n\
@@ -119,12 +119,12 @@ local:devicelocation a :question;\n\
 }.";
 
 
-static char  SEMANTICS_SWITCH_STATUS_ON[] ="# Switch (State)\n\
+static char  SEMANTICS_SWITCH_STATUS_ON[] ="# Presence (State)\n\
 @prefix local: <local#>.\n\
 @prefix : <ex#>.\n\
 local:state :presence :on.\n";
 
-static char  SEMANTICS_SWITCH_STATUS_OFF[] ="# Switch (State)\n\
+static char  SEMANTICS_SWITCH_STATUS_OFF[] ="# Presence (State)\n\
 @prefix local: <local#>.\n\
 @prefix : <ex#>.\n\
 local:state :presence :off.\n";
