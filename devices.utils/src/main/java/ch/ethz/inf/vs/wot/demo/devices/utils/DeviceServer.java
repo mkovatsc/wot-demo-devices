@@ -3,9 +3,11 @@ package ch.ethz.inf.vs.wot.demo.devices.utils;
 import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.coap.LinkFormat;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.network.CoAPEndpoint;
 import org.eclipse.californium.core.network.Endpoint;
 import org.eclipse.californium.core.server.resources.Resource;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +25,8 @@ public class DeviceServer extends CoapServer {
     ;
 
     public DeviceServer(int port) {
-        super(port);
+        super();
+        addEndpoint(new CoAPEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50", port)));
         tasks.schedule(new Runnable() {
             @Override
             public void run() {
