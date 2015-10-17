@@ -25,6 +25,7 @@
 		<module>services.Converter</module>
 		<module>services.Ambient</module>
 		<module>services.LIFX</module>
+		<module>services.Occupancy</module>
 	</modules>
 
 </project>
