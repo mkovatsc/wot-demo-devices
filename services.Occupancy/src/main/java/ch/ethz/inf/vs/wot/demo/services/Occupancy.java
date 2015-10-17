@@ -1,13 +1,18 @@
 package ch.ethz.inf.vs.wot.demo.services;
 
+import ch.ethz.inf.vs.semantics.parser.ExecutionPlan;
+import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.services.CoapRequest.Factory;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.WebLink;
 import org.eclipse.californium.core.coap.LinkFormat;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -16,13 +21,11 @@ import java.util.Set;
  */
 public class Occupancy implements CoapHandler {
 
-	private static final String DEMO_IP = "[2001:0470:cafe::38b2:cf50]";
+	private static String resourcesDirectory;
+	private String reasonerMashupInterface;
 
 	private static String rdLookup = "";
 
-	// exit codes for runtime errors
-	public static final int ERR_INIT_FAILED = 1;
-	
 	private static Occupancy instance = new Occupancy();
 	
 	private HashMap<InetAddress, Integer> states;
@@ -32,13 +35,13 @@ public class Occupancy implements CoapHandler {
 	}
 
 	public static void main(String[] args) {
-		CoapClient rd = new CoapClient("coap://" + DEMO_IP + ":5683");
+		CoapClient rd = new CoapClient("coap://" + DeviceServer.DEMO_IP + ":5683");
 		Set<WebLink> resources = rd.discover("rt=core.rd-lookup");
 		if ((resources != null) && (resources.size() > 0)) {
 			
 			// set RD lookup URI
 			WebLink w = resources.iterator().next();
-			rdLookup = "coap://" + DEMO_IP + ":5683" + w.getURI();
+			rdLookup = "coap://" + DeviceServer.DEMO_IP + ":5683" + w.getURI();
 			
 			Set<WebLink> pirIn = null;
 			
@@ -71,6 +74,42 @@ public class Occupancy implements CoapHandler {
 		}
 	}
 
+	private void findResourceDirectories() {
+		if (resourcesDirectory != null) {
+			return;
+		}
+		CoapClient c = new CoapClient();
+		c.setURI("coap://" + DeviceServer.DEMO_IP + ":5683");
+
+		Set<WebLink> resources = c.discover("rt=core.rd-lookup");
+		if (resources != null) {
+			if (resources.size() > 0) {
+				WebLink w = resources.iterator().next();
+				String uri = "coap://" + DeviceServer.DEMO_IP + ":5683" + w.getURI();
+				resourcesDirectory = uri;
+			}
+		}
+	}
+
+
+	private void findReasonerMashupInterface() {
+		findResourceDirectories();
+		if (resourcesDirectory == null || reasonerMashupInterface != null) {
+			return;
+		}
+
+		CoapClient client = new CoapClient();
+		client.setURI(resourcesDirectory + "/res?rt=sr-mashup");
+		CoapResponse response = client.get();
+
+		Set<WebLink> resources = Collections.emptySet();
+		if (response.getOptions().getContentFormat() == MediaTypeRegistry.APPLICATION_LINK_FORMAT)
+			resources = LinkFormat.parse(response.getResponseText());
+		if (resources.size() > 0) {
+			WebLink w = resources.iterator().next();
+			reasonerMashupInterface = w.getURI().replace("localhost",DeviceServer.DEMO_IP);
+		}
+	}
 	@Override
 	public void onLoad(CoapResponse response) {
 		Integer input = Integer.parseInt(response.getResponseText());
@@ -78,10 +117,92 @@ public class Occupancy implements CoapHandler {
 		
 		if (old!=null && input!=old) {
 			System.out.println("Occupancy changed");
-			// TODO send goal to reasoning server
-			
-			// TODO execute execution plan
+			executeExecutionPlan();
 		}
+	}
+
+	private void executeExecutionPlan() {
+		String goal= "@prefix : <ex#>.\n" +
+                "@prefix local: <local#>.\n" +
+                "@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.\n" +
+                "@prefix dbpedia: <http://dbpedia.org/resource/>.\n" +
+                "@prefix geonames: <http://www.geonames.org/ontology#>.\n" +
+                "@prefix http: <http://www.w3.org/2011/http#>.\n" +
+                "@prefix log: <http://www.w3.org/2000/10/swap/log#>.\n" +
+                "@prefix st: <http://purl.org/restdesc/states#>.\n" +
+                "@prefix ex: <http://example.org/#>.\n" +
+                " \n" +
+                "{ \n" +
+                "  ?mediaplayerPlace a :current_location.\n" +
+                "  ?song a :current_song.\n" +
+                "  ?state a :current_state.\n" +
+                "  ?cl a :current_location.\n" +
+                "\t?s a st:State;\n" +
+                "\tlog:includes {?mediaplayerPlace :song ?song.?mediaplayerPlace :songState :play.?cl  :songState :stop.}.\n" +
+                "}\n" +
+                "=>\n" +
+                "{   \n" +
+                "}.\n" +
+                "\n";
+		String goal_input = "@prefix : <ex#>.\n" +
+                "@prefix local: <local#>.\n" +
+                "@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.\n" +
+                "@prefix dbpedia: <http://dbpedia.org/resource/>.\n" +
+                "@prefix geonames: <http://www.geonames.org/ontology#>.\n" +
+                "@prefix http: <http://www.w3.org/2011/http#>.\n" +
+                "@prefix log: <http://www.w3.org/2000/10/swap/log#>.\n" +
+                "@prefix st: <http://purl.org/restdesc/states#>.\n" +
+                "@prefix ex: <http://example.org/#>.\n" +
+                " \n" +
+                "{ \n" +
+                "?state :song ?song.\n" +
+                "  ?state :state :play.\n" +
+                "   ?device :hasState ?state.\n" +
+                "  ?device geonames:locatedIn ?l.\n" +
+                "}\n" +
+                "=>\n" +
+                "{  \n" +
+                "  ?song a :current_song.\n" +
+                "  ?state a :current_state.\n" +
+                "  ?l a :current_location.\n" +
+                "  ?device a :stopable.\n" +
+                "}.\n" +
+                "\n" +
+                "\n" +
+                "{ \n" +
+                "  ?mediaplayerPlace a :location. \n" +
+                "\t?mediaplayerPlace :presence :on.\n" +
+                "}\n" +
+                "=>\n" +
+                "{   \n" +
+                "  ?mediaplayerPlace  a :current_location.\n" +
+                "}.\n" +
+                "\n" +
+                "{\n" +
+                "  ?mediaplayerPlace  a :current_location.\n" +
+                "  ?p geonames:locatedIn    ?mediaplayerPlace.\n" +
+                "}=>{\n" +
+                "  ?p  a :changable.\n" +
+                "}.\n";
+
+		String  query= goal + "\n########################\n" + goal_input;
+		findReasonerMashupInterface();
+		if (reasonerMashupInterface != null) {
+            CoapClient client = new CoapClient();
+
+            client.setTimeout(10000);
+            client.setURI(reasonerMashupInterface);
+            CoapResponse resp = client.post(query, MediaTypeRegistry.TEXT_PLAIN);
+            String strplan = resp.getResponseText();
+            ExecutionPlan plan = new ExecutionPlan(strplan, new Factory());
+            plan.execute(new ExecutionPlan.RequestCallback() {
+                @Override
+                public void onComplete(Object r) {
+                    System.out.println("DONE");
+                }
+            });
+
+        }
 	}
 
 	@Override
