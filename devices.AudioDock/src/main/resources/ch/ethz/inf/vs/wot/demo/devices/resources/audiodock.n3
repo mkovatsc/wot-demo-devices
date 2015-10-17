@@ -63,7 +63,7 @@ local:musicplayer :hasState local:state.
 #Configure Song
 {
 	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
-
+	local:musicplayer a :changable.
 	?song a dbpedia:Song;
        :name ?new;
        :postion ?x.
@@ -88,6 +88,7 @@ local:musicplayer :hasState local:state.
 
 {
 	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
+	local:musicplayer a :stopable.
  
 	?state a st:State.
 	?state log:includes { local:state :power :on. ?mediaplayerPlace :song ?song. }. 
@@ -109,6 +110,7 @@ local:musicplayer :hasState local:state.
 
 {
 	local:musicplayer geonames:locatedIn ?mediaplayerPlace.
+	local:musicplayer a :changable.
  
   
 	?song a dbpedia:Song;
