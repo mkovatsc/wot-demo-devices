@@ -4,19 +4,16 @@ import ch.ethz.inf.vs.wot.demo.devices.AudioDock;
 import javazoom.jl.player.Player;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
 
 public class MP3Player {
 
 	private Player player;
-	private FileInputStream FIS;
+	private InputStream FIS;
 	private BufferedInputStream BIS;
 	private boolean canResume;
-	private File mp3;
+	private InputStream mp3;
 	private int total;
 	private int stopped;
 	private boolean valid;
@@ -39,17 +36,12 @@ public class MP3Player {
 		return canResume;
 	}
 
-	public void setMP3(String path) {
-		this.mp3 = new File(path);
+	public void setMP3(String name) {
+		this.mp3 = getClass().getResourceAsStream(name);
 	}
 	
-	public void setMP3(URL uri) {
-		try {
-			this.mp3 = new File(uri.toURI());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void setMP3(InputStream song) {
+		this.mp3 = song;
 	}
 	
 	public int getPosition() {
@@ -107,8 +99,8 @@ public class MP3Player {
 		valid = true;
 		canResume = false;
 		try {
-			FIS = new FileInputStream(mp3);
-			total = FIS.available();
+			FIS = mp3;
+			total = mp3.available();
 			if (pos > -1)
 				FIS.skip(pos);
 			BIS = new BufferedInputStream(FIS);
@@ -160,7 +152,7 @@ public class MP3Player {
 
 	public void setSong(String song) {
 		this.song =song;
-		setMP3(getClass().getResource(song));
+		setMP3(song);
 		DynamicDeviceSemantics.getInstance().changed();
 	}
 

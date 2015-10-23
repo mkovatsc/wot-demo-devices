@@ -10,7 +10,7 @@ import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class AudioNow extends CoapResource {
 	
-	private static String[] songs = {"bohemian-rhapsody.mp3", "gangnam-style.mp3", "fur_elise.mp3"};
+	private static String[] songs = {"bohemian_rhapsody.mp3", "gangnam_style.mp3", "fur_elise.mp3"};
 	private static String song = songs[0];
 	
 	public static String getSong() {
@@ -25,7 +25,7 @@ public class AudioNow extends CoapResource {
 
 		setObservable(true);
 		
-		AudioPlaying.player.setMP3(getClass().getResource(song));
+		AudioPlaying.player.setMP3(song);
 	}
 
 	@Override
