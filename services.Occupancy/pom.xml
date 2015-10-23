@@ -27,6 +27,11 @@
 			<artifactId>parser</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.ethz.inf.vs.wot.demo</groupId>
+			<artifactId>devices.utils</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
