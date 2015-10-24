@@ -9,7 +9,9 @@ import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.network.CoapEndpoint;
 
+import java.net.InetSocketAddress;
 
 
 public class CoapRequest extends ExecutionPlan.Request {
@@ -28,6 +30,7 @@ public class CoapRequest extends ExecutionPlan.Request {
 
         CoapClient client = new CoapClient();
 
+        client.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
         client.setTimeout(10000);
         client.setURI(uri.toString().replace("coap://localhost", "coap://" + DeviceServer.DEMO_IP).replace("coap://127.0.0.1", "coap://" + DeviceServer.DEMO_IP));
         String m = this.method.toString().toUpperCase();
@@ -36,7 +39,7 @@ public class CoapRequest extends ExecutionPlan.Request {
             public void onLoad(CoapResponse response) {
                 done = true;
                 if (callback != null) {
-                    callback.onComplete(response);
+                    callback.onComplete(response.getResponseText());
 
                 }
             }

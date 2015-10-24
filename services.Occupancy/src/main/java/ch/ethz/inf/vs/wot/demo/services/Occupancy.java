@@ -9,12 +9,16 @@ import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.WebLink;
 import org.eclipse.californium.core.coap.LinkFormat;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.network.CoapEndpoint;
+import org.eclipse.californium.core.network.EndpointManager;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The class ConverterServer
@@ -27,15 +31,19 @@ public class Occupancy implements CoapHandler {
 	private static String rdLookup = "";
 
 	private static Occupancy instance = new Occupancy();
-	
+	AtomicBoolean running = new AtomicBoolean();
 	private HashMap<InetAddress, Integer> states;
 	
 	public Occupancy() {
-		states = new HashMap<InetAddress, Integer>();
+
+		states = new HashMap<InetAddress, Integer>();		findResourceDirectories();
 	}
 
 	public static void main(String[] args) {
+
+
 		CoapClient rd = new CoapClient("coap://" + DeviceServer.DEMO_IP + ":5683");
+		rd.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
 		Set<WebLink> resources = rd.discover("rt=core.rd-lookup");
 		if ((resources != null) && (resources.size() > 0)) {
 			
@@ -58,6 +66,7 @@ public class Occupancy implements CoapHandler {
 					System.out.println("Observing " + in.getURI());
 					
 					CoapClient client = new CoapClient(in.getURI());
+					client.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
 					client.observe(instance);
 				}
 				
@@ -79,6 +88,8 @@ public class Occupancy implements CoapHandler {
 			return;
 		}
 		CoapClient c = new CoapClient();
+
+		c.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
 		c.setURI("coap://" + DeviceServer.DEMO_IP + ":5683");
 
 		Set<WebLink> resources = c.discover("rt=core.rd-lookup");
@@ -99,7 +110,9 @@ public class Occupancy implements CoapHandler {
 		}
 
 		CoapClient client = new CoapClient();
+		client.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
 		client.setURI(resourcesDirectory + "/res?rt=sr-mashup");
+		client.setTimeout(10000);
 		CoapResponse response = client.get();
 
 		Set<WebLink> resources = Collections.emptySet();
@@ -117,6 +130,11 @@ public class Occupancy implements CoapHandler {
 		
 		if (old!=null && input!=old) {
 			System.out.println("Occupancy changed");
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			executeExecutionPlan();
 		}
 	}
@@ -190,17 +208,30 @@ public class Occupancy implements CoapHandler {
 		if (reasonerMashupInterface != null) {
             CoapClient client = new CoapClient();
 
+			client.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
             client.setTimeout(10000);
             client.setURI(reasonerMashupInterface);
             CoapResponse resp = client.post(query, MediaTypeRegistry.TEXT_PLAIN);
             String strplan = resp.getResponseText();
-            ExecutionPlan plan = new ExecutionPlan(strplan, new Factory());
-            plan.execute(new ExecutionPlan.RequestCallback() {
-                @Override
-                public void onComplete(Object r) {
-                    System.out.println("DONE");
-                }
-            });
+			if(strplan!=null&&!strplan.isEmpty() && running.compareAndSet(false,true)) {
+				System.out.println("Plan found");
+				final ExecutionPlan plan = new ExecutionPlan(strplan, new Factory());
+				plan.execute(new ExecutionPlan.RequestCallback() {
+					@Override
+					public void onComplete(Object r) {
+						boolean done = true;
+						for (ExecutionPlan.Request request: plan.getRequests().values()){
+							done = done&&request.isDone();
+
+						}
+						if(done){
+							running.set(false);
+
+							System.out.println("DONE");
+						}
+					}
+				});
+			}
 
         }
 	}
