@@ -35,14 +35,6 @@ local:devicelocation a :question;
 	local:devicelocation :hasAnswer ?a
 }.
 
-# if unanswered fit unspecified locations
-{
-   local:devicelocation a :openquestion.
-} => {
-   local:thermostat :locatedAt [a :location].
-}.
-
-
 {
 	?r a dbpedia:Temperature.
 } => {
@@ -100,4 +92,34 @@ local:devicelocation a :question;
 	[ a st:StateChange;
 	st:replaced { local:state :power :off.};
 	st:parent ?state ].
+}.
+
+
+{
+
+	local:thermostat :locatedAt ?location.
+	?state a st:State;
+			log:includes {?location ex:hasTemperature ?old. };
+			log:notIncludes {local:state :power ?xx.}.
+	local:state :power ?powerstate.
+
+}=>{
+
+
+	[ a st:StateChange;
+		st:added {local:state :power ?powerstate. };
+		st:removed { };
+		st:parent ?state ].
+}.
+
+
+
+{
+  ?t ex:derivedFrom :sample_celsius.
+	local:thermostat :locatedAt  ?a.
+	?t ex:hasUnit ?u.
+}=>{
+	?a :hasAction :hasTemperature.
+	?a :hasTemperatureUnit ?u.
+
 }.
