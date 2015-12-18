@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DeviceServer extends CoapServer {
 
-	public static final String DEMO_IP = "[2001:0470:cafe::cf83]";
+	public static final String DEMO_IP = "[2001:0470:cafe::38b2:cf50]";
 	private static final int RD_LIFETIME = 20; // minimum enforced by RD is 60 seconds
 	private static ScheduledThreadPoolExecutor tasks = new ScheduledThreadPoolExecutor(1);
 
@@ -25,6 +25,8 @@ public class DeviceServer extends CoapServer {
 
 	public DeviceServer(int port) {
         super();
+        
+        // use explicit interface instead of wildcard for proper return route
         addEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50", port)));
 
 		tasks.schedule(new Runnable() {
