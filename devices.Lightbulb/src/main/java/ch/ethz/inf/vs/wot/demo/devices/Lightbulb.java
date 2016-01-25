@@ -16,15 +16,12 @@ import java.awt.*;
 public class Lightbulb extends DeviceServer {
 
 	private static int port = 0; // since we register with the RD, we can use a random port
-	private static final int RD_LIFETIME = 60; // minimum is 60 seconds
-	private String rdHandle;
 	
 	private static DevicePanel led;
 	private static Color color = Color.white;
 
 	// exit codes for runtime errors
 	public static final int ERR_INIT_FAILED = 1;
-
 	
 	public static void setColor(Color c) {
 		color = c;
@@ -76,8 +73,8 @@ public class Lightbulb extends DeviceServer {
 		        
 			        Graphics2D g2 = (Graphics2D) g;
 			        
-			        Color[] gradient = { new Color(color.getRed(), color.getGreen(), color.getBlue(), 240), new Color(color.getRed(), color.getGreen(), color.getBlue(), 240), transparent };
-			        float[] fraction = { 0.0f, 0.2f, 1.0f };
+			        Color[] gradient = { new Color(color.getRed(), color.getGreen(), color.getBlue(), 240), new Color(color.getRed(), color.getGreen(), color.getBlue(), 200), new Color(color.getRed(), color.getGreen(), color.getBlue(), 0) };
+			        float[] fraction = { 0.0f, 0.5f, 1.0f };
 			        RadialGradientPaint p = new RadialGradientPaint(120, 120, 120, fraction, gradient);
 			        g2.setPaint(p);
 			        g2.fillOval(0, 0, 240, 240);
