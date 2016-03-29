@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Smartphone extends CoapServer implements ActionListener {
 
-	private static final String DEMO_IP = DeviceServer.DEMO_IP;
+	private static final String DEMO_IP = DeviceServer.RD_ADDRESS;
 	// since we register with the RD, we can use a random port
 	private static int port = 0;
 	private static final long NOTIFICATION_DELAY = 3; // seconds

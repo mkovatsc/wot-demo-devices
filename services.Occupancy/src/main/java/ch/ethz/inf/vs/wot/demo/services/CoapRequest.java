@@ -32,7 +32,7 @@ public class CoapRequest extends ExecutionPlan.Request {
 
         client.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
         client.setTimeout(10000);
-        client.setURI(uri.toString().replace("coap://localhost", "coap://" + DeviceServer.DEMO_IP).replace("coap://127.0.0.1", "coap://" + DeviceServer.DEMO_IP));
+        client.setURI(uri.toString().replace("coap://localhost", "coap://" + DeviceServer.RD_ADDRESS).replace("coap://127.0.0.1", "coap://" + DeviceServer.RD_ADDRESS));
         String m = this.method.toString().toUpperCase();
         CoapHandler handler = new CoapHandler() {
             @Override

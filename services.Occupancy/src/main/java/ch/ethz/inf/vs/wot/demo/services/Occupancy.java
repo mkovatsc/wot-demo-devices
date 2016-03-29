@@ -42,14 +42,14 @@ public class Occupancy implements CoapHandler {
 	public static void main(String[] args) {
 
 
-		CoapClient rd = new CoapClient("coap://" + DeviceServer.DEMO_IP + ":5683");
+		CoapClient rd = new CoapClient("coap://" + DeviceServer.RD_ADDRESS + ":5683");
 		rd.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
 		Set<WebLink> resources = rd.discover("rt=core.rd-lookup");
 		if ((resources != null) && (resources.size() > 0)) {
 			
 			// set RD lookup URI
 			WebLink w = resources.iterator().next();
-			rdLookup = "coap://" + DeviceServer.DEMO_IP + ":5683" + w.getURI();
+			rdLookup = "coap://" + DeviceServer.RD_ADDRESS + ":5683" + w.getURI();
 			
 			Set<WebLink> pirIn = null;
 			
@@ -90,13 +90,13 @@ public class Occupancy implements CoapHandler {
 		CoapClient c = new CoapClient();
 
 		c.setEndpoint(new CoapEndpoint(new InetSocketAddress("2001:0470:cafe::38b2:cf50",0)));
-		c.setURI("coap://" + DeviceServer.DEMO_IP + ":5683");
+		c.setURI("coap://" + DeviceServer.RD_ADDRESS + ":5683");
 
 		Set<WebLink> resources = c.discover("rt=core.rd-lookup");
 		if (resources != null) {
 			if (resources.size() > 0) {
 				WebLink w = resources.iterator().next();
-				String uri = "coap://" + DeviceServer.DEMO_IP + ":5683" + w.getURI();
+				String uri = "coap://" + DeviceServer.RD_ADDRESS + ":5683" + w.getURI();
 				resourcesDirectory = uri;
 			}
 		}
@@ -120,7 +120,7 @@ public class Occupancy implements CoapHandler {
 			resources = LinkFormat.parse(response.getResponseText());
 		if (resources.size() > 0) {
 			WebLink w = resources.iterator().next();
-			reasonerMashupInterface = w.getURI().replace("localhost",DeviceServer.DEMO_IP);
+			reasonerMashupInterface = w.getURI().replace("localhost",DeviceServer.RD_ADDRESS);
 		}
 	}
 	@Override

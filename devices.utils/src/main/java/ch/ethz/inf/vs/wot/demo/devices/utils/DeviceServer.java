@@ -16,8 +16,11 @@ import java.util.concurrent.TimeUnit;
 
 public class DeviceServer extends CoapServer {
 
-	public static final String DEMO_IP = "[2001:0470:cafe::38b2:cf50]";
+	public static final String RD_ADDRESS = "[2001:0470:cafe::38b2:cf50]";
 	private static final int RD_LIFETIME = 20; // minimum enforced by RD is 60 seconds
+	
+	
+	
 	private static ScheduledThreadPoolExecutor tasks = new ScheduledThreadPoolExecutor(1);
 
 	private String rdHandle;
@@ -40,13 +43,13 @@ public class DeviceServer extends CoapServer {
 	private void registerSelf() {
 		CoapClient c = createClient();
 		c.setTimeout(5000);
-		c.setURI("coap://" + DEMO_IP + ":5683");
+		c.setURI("coap://" + RD_ADDRESS + ":5683");
 		Set<WebLink> resources = c.discover("rt=core.rd");
 		if (resources != null) {
 			System.out.println("Found RD");
 			if (resources.size() > 0) {
 				WebLink w = resources.iterator().next();
-				String uri = "coap://" + DEMO_IP + ":5683" + w.getURI();
+				String uri = "coap://" + RD_ADDRESS + ":5683" + w.getURI();
 				registerSelf(uri);
 			}
 		} else {
@@ -64,7 +67,7 @@ public class DeviceServer extends CoapServer {
 
 				System.out.println("Registered");
 
-				rdHandle = "coap://" + DEMO_IP + ":5683/" + response.getOptions().getLocationPathString();
+				rdHandle = "coap://" + RD_ADDRESS + ":5683/" + response.getOptions().getLocationPathString();
 
 				tasks.scheduleAtFixedRate(new Runnable() {
 					@Override
