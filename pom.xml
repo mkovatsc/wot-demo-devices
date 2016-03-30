@@ -26,6 +26,8 @@
 		<module>services.Ambient</module>
 		<module>services.LIFX</module>
 		<module>services.Occupancy</module>
+		
+		<module>w3c.Lightbulb</module>
 	</modules>
 
 </project>
