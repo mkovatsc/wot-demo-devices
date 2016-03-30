@@ -4,6 +4,7 @@ import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
 import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
 import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
 import ch.ethz.inf.vs.wot.demo.w3c.resources.*;
+import ch.ethz.inf.vs.wot.demo.w3c.utils.TDRes;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.network.Endpoint;
@@ -25,6 +26,10 @@ public class Lightbulb extends DeviceServer {
 
 	// exit codes for runtime errors
 	public static final int ERR_INIT_FAILED = 1;
+
+	public static Color getColor() {
+		return color;
+	}
 	
 	public static void setColor(Color c) {
 		color = c;
@@ -61,20 +66,19 @@ public class Lightbulb extends DeviceServer {
 		add(new CoapResource("pwr").add(
 			new PowerInstantaneous(),
 			new PowerCumulative(),
-			new PowerRelay()));
+			new PowerRelay(),
+			new PowerToggle()));
 		add(new CoapResource("led").add(
 			new LEDColor(),
-			new LEDObserve()));
-		add(new CoapResource("actions").add(
-				new ActionFade()));		
+			new LEDObserve(),
+			new ActionFade()));		
 
 		// GUI
 		led = new DevicePanel(getClass().getResourceAsStream("superstar_400.png"), 240, 400) {
 		    @Override
 		    protected void paintComponent(Graphics g) {
 		        super.paintComponent(g);
-		        g.drawImage(super.img, 0, 0, getWidth(), getHeight(), this);
-
+		        
 		        if (PowerRelay.getRelay()) {
 		        
 			        Graphics2D g2 = (Graphics2D) g;

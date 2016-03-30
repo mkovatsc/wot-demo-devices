@@ -1,4 +1,4 @@
-package ch.ethz.inf.vs.wot.demo.w3c.resources;
+package ch.ethz.inf.vs.wot.demo.w3c.utils;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
@@ -14,12 +14,8 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
-
-import ch.ethz.inf.vs.wot.demo.w3c.resources.WoTResource.Interaction;
 
 public class TDRes extends CoapResource {
 	
@@ -64,8 +60,8 @@ public class TDRes extends CoapResource {
 		
 		public String toString() {
 
+			// get base URI
 			String uri = "coap://";
-			
 			InetAddress addr = thing.getEndpoints().get(0).getAddress().getAddress();
 			if (addr instanceof Inet4Address) {
 				uri += addr.getHostAddress();
@@ -73,29 +69,24 @@ public class TDRes extends CoapResource {
 				uri += "[" + addr.getHostAddress() + "]";
 			}
 			uri += ":" + thing.getEndpoints().get(0).getAddress().getPort() + "/";
-			
 			this.uris = new ArrayList<String>();
 			this.uris.add(uri);
 			
-			for (Resource r : thing.getRoot().getChildren()) {
-				for (Resource res : r.getChildren()) {
-					if (res instanceof WoTResource) {
-						JsonArray hrefs = new JsonArray();
-						hrefs.add(new JsonPrimitive(res.getPath()+res.getName()));
-						((WoTResource) res).td.add("href", hrefs);
-						
-						if (Interaction.PROPERTY.equals(((WoTResource) res).interaction)) {
-							this.properties.add(((WoTResource) res).td);
-						} else if (Interaction.ACTION.equals(((WoTResource) res).interaction)) {
-							this.actions.add(((WoTResource) res).td);
-						} else if (Interaction.EVENT.equals(((WoTResource) res).interaction)) {
-							this.events.add(((WoTResource) res).td);
-						}
-					}
+			traverseTree(thing.getRoot(), this.properties, this.actions, this.events);
+
+			return gson.toJson(this);
+		}
+		
+		private void traverseTree(Resource start, ArrayList<JsonObject> properties, ArrayList<JsonObject> actions, ArrayList<JsonObject> events) {
+			for (Resource res : start.getChildren()) {
+				traverseTree(res, properties, actions, events);
+				
+				if (res instanceof PropertyResource) {
+					properties.add(((WoTResource) res).td);
+				} else if (res instanceof ActionResource) {
+					actions.add(((WoTResource) res).td);
 				}
 			}
-			
-			return gson.toJson(this);
 		}
 	}
 }

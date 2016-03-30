@@ -6,6 +6,7 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 import com.google.gson.JsonObject;
 
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
+import ch.ethz.inf.vs.wot.demo.w3c.utils.ActionResource;
 
 import java.awt.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -14,17 +15,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.APPLICATION_JSON;
 
-public class ActionFade extends WoTResource {
+public class ActionFade extends ActionResource {
 	
-	private static Color color = Color.white;
 	protected AtomicInteger taskNum = new AtomicInteger(0);
 	
 	private ScheduledThreadPoolExecutor tasks = new ScheduledThreadPoolExecutor(1);
 
 	public ActionFade() {
-		super(Interaction.ACTION, "PropertyAction", "Fade", "fade");
+		super("PropertyAction", "Fade", "fade", gson.fromJson("{\"valueType\":{\"duration\":\"xsd:unsignedInteger\",\"target\":\"xsd:string\"}}", JsonObject.class));
 	}
 
 	@Override
@@ -42,7 +41,12 @@ public class ActionFade extends WoTResource {
 			Color target = Color.decode(json.get("target").getAsString());
 			int duration = json.get("duration").getAsInt();
 			
-			this.add(new FadeTask(duration, target));
+			FadeTask task = new FadeTask(duration, target);
+			
+			this.add(task);
+			
+			exchange.setLocationPath(task.getPath()+task.getName());
+			exchange.respond(CREATED);
 			
 		} catch (Exception e) {
 			exchange.respond(BAD_REQUEST, "wrong schema");
@@ -50,7 +54,7 @@ public class ActionFade extends WoTResource {
 	}
 	
 	private class FadeTask extends CoapResource implements Runnable {
-		
+		private static final int STEP = 50;
 		private int duration;
 		private Color target;
 		
@@ -66,18 +70,40 @@ public class ActionFade extends WoTResource {
 		@Override
 		public void run() {
 			
-			while (!color.equals(target)) {
-				
-				Lightbulb.setColor(target);
-				color = target;
-				
+			float[] start = Lightbulb.getColor().getRGBColorComponents(null);
+			float[] end = target.getRGBColorComponents(null);
+			float dr = (end[0] - start[0])*STEP/duration;
+			float dg = (end[1] - start[1])*STEP/duration;
+			float db = (end[2] - start[2])*STEP/duration;
+			
+			long tik = System.currentTimeMillis();
+			
+			for (int i=1; i*STEP<duration; ++i) {
+				start[0] += dr;
+				start[1] += dg;
+				start[2] += db;
+
 				try {
-					Thread.sleep(duration);
+					Thread.sleep(STEP);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				Lightbulb.setColor(new Color(start[0], start[1], start[2]));
 			}
+			
+			try {
+				Thread.sleep(duration % STEP);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			Lightbulb.setColor(target);
+			
+			System.out.println("Fade (ms): " + (System.currentTimeMillis()-tik));
+			
 			this.delete();
 		}
 	}

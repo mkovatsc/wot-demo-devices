@@ -7,21 +7,21 @@ import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
+import ch.ethz.inf.vs.wot.demo.w3c.utils.PropertyResource;
 
 import java.awt.*;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
-public class LEDObserve extends WoTResource {
+public class LEDObserve extends PropertyResource {
 	
 	private static String uri = "";
 	private static CoapClient client = null;
 	private static CoapObserveRelation handle = null;
 
 	public LEDObserve() {
-		super(Interaction.PROPERTY, "URI", "Sync Color", "obs");
-		td.addProperty("writeable", true);
+		super("URI", "Sync Color", "obs", "xsd:string", true);
 	}
 
 	@Override

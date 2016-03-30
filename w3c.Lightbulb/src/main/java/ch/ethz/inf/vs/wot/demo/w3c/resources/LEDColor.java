@@ -3,22 +3,21 @@ package ch.ethz.inf.vs.wot.demo.w3c.resources;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
+import ch.ethz.inf.vs.wot.demo.w3c.utils.PropertyResource;
 
 import java.awt.*;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
-public class LEDColor extends WoTResource {
+public class LEDColor extends PropertyResource {
 	
 	private static Color color = Color.white;
 
 	public LEDColor() {
-		super(Interaction.PROPERTY, "RGBColor", "Color", "color");
+		super("RGBColor", "Color", "color", "xsd:string", true);
 		getAttributes().setObservable();
 		setObservable(true);
-		
-		td.addProperty("writeable", true);
 	}
 
 	@Override

@@ -1,33 +1,29 @@
-package ch.ethz.inf.vs.wot.demo.w3c.resources;
+package ch.ethz.inf.vs.wot.demo.w3c.utils;
 
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.server.resources.Resource;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 public class WoTResource extends CoapResource {
 	
-	enum Interaction {
-		PROPERTY,
-		ACTION,
-		EVENT
-	}
+	protected static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
-	static Gson gson = new  Gson();
+	protected JsonObject td = new JsonObject();
 	
-	public Interaction interaction;
-	
-	JsonObject td = new JsonObject();
-	
-	public WoTResource(Interaction interactionType, String type, String name, String href) {
+	public WoTResource(String type, String name, String href) {
 		super(href);
 		this.getAttributes().setTitle(name);
 		
-		this.interaction = interactionType;
-		
 		td.addProperty("@type", type);
 		td.addProperty("name", name);
-		
 	}
-
+	
+	@Override
+	public void setParent(Resource parent) {
+		super.setParent(parent);
+		td.addProperty("href", this.getPath()+this.getName());
+	}
 }
