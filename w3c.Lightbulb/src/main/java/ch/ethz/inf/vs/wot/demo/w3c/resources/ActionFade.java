@@ -78,7 +78,7 @@ public class ActionFade extends ActionResource {
 			
 			long tik = System.currentTimeMillis();
 			
-			for (int i=1; i*STEP<duration; ++i) {
+			for (int i=0; i*STEP<duration; ++i) {
 				start[0] += dr;
 				start[1] += dg;
 				start[2] += db;

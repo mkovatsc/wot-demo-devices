@@ -23,6 +23,8 @@ public class PowerInstantaneous extends PropertyResource {
 		super("Property", "Instantaneous Power", "w", "xsd:double", false);
 		getAttributes().setObservable();
 		setObservable(true);
+		
+		this.td.addProperty("unit", "w");
 
 		// Set timer task scheduling
 		Timer timer = new Timer();

@@ -2,6 +2,8 @@ package ch.ethz.inf.vs.wot.demo.w3c.resources;
 
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
+import com.google.gson.JsonArray;
+
 import ch.ethz.inf.vs.wot.demo.w3c.utils.PropertyResource;
 
 import java.text.DecimalFormat;
@@ -19,6 +21,8 @@ public class PowerCumulative extends PropertyResource {
 		super("PowerConsumption", "Cumulative Power", "kwh", "xsd:double", false);
 		getAttributes().setObservable();
 		setObservable(true);
+		
+		this.td.addProperty("unit", "kwh");
 
 		// Set timer task scheduling
 		Timer timer = new Timer();
