@@ -9,9 +9,11 @@ import ch.ethz.inf.vs.wot.demo.utils.w3c.ActionResource;
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
 
 import java.awt.*;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.APPLICATION_JSON;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 public class ActionOn extends ActionResource {
@@ -50,65 +52,65 @@ public class ActionOn extends ActionResource {
 	private class OffTask extends CoapResource implements Runnable {
 		private static final int STEP = 50;
 		private int duration;
+		private Future<?> handle;
 		
 		public OffTask(int duration) {
 			super(Integer.toString(taskNum.incrementAndGet()));
 			
 			this.duration = duration;
 			
-			Lightbulb.tasks.execute(this);
+			handle = Lightbulb.tasks.submit(this);
 		}
+		
+		@Override
+		public void handleGET(CoapExchange exchange) {
+			exchange.respond(CONTENT, ""+duration, TEXT_PLAIN);
+		};
+		
+		@Override
+		public void handleDELETE(CoapExchange exchange) {
+			handle.cancel(true);
+			this.delete();
+			exchange.respond(DELETED);
+		};
 
 		@Override
 		public void run() {
 			
-			if (!PowerRelay.getRelay()) {
+			long tik = System.currentTimeMillis();
 			
-				float[] start = Lightbulb.getColor().getRGBComponents(null);
+			try {
+			
+				if (!PowerRelay.getRelay()) {
 				
-				// start from transparent
-				start[3] = 0f;
-				
-				System.out.println("On from: " + start[0]+"/"+start[1]+"/"+start[2]+"/"+start[3] + " for " + duration);
-				
-				float d = (float)STEP/duration;
-				
-				long tik = System.currentTimeMillis();
-				
-				Lightbulb.setColor(new Color(start[0], start[1], start[2], 0f));
-				PowerRelay.setRelay(true);
-				
-				// start with 1 for last step outside loop to guard against overshooting
-				for (int i=1; i*STEP<duration; ++i) {
-					start[3] += d;
-	
-					try {
+					float[] start = Lightbulb.getColor().getRGBComponents(null);
+					// start from transparent
+					start[3] = 0f;
+					float d = (float)STEP/duration;
+					
+					Lightbulb.setColor(new Color(start[0], start[1], start[2], 0f));
+					PowerRelay.setRelay(true);
+					
+					// start with 1 for last step outside loop to guard against overshooting
+					for (int i=1; i*STEP<duration; ++i) {
+						start[3] += d;
 						Thread.sleep(STEP);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Lightbulb.setColor(new Color(start[0], start[1], start[2], start[3]));
 					}
-					System.out.print(".");
-					Lightbulb.setColor(new Color(start[0], start[1], start[2], start[3]));
-				}
-				
-				System.out.println();
-				
-				long remaining = duration - (System.currentTimeMillis()-tik);
-				
-				try {
+					
+					long remaining = duration - (System.currentTimeMillis()-tik);
+					
 					Thread.sleep(Math.max(remaining, 0));
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
+					Lightbulb.setColor(new Color(start[0], start[1], start[2], 1f));
+					
+					System.out.println("Fade in (ms): " + (System.currentTimeMillis()-tik));
+					
+				} else {
+					System.out.println("Already on");
 				}
-				
-				Lightbulb.setColor(new Color(start[0], start[1], start[2], 1f));
-				
-				System.out.println("Fade in (ms): " + (System.currentTimeMillis()-tik));
-				
-			} else {
-				System.out.println("Already on");
+			} catch (InterruptedException e) {
+				System.out.println("Fade in interrupted after " + (System.currentTimeMillis()-tik));
 			}
 			
 			this.delete();

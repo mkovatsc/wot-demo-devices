@@ -9,12 +9,13 @@ import ch.ethz.inf.vs.wot.demo.utils.w3c.ActionResource;
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
 
 import java.awt.*;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
+import static org.eclipse.californium.core.coap.MediaTypeRegistry.*;
 
 public class ActionFade extends ActionResource {
 	
@@ -55,6 +56,7 @@ public class ActionFade extends ActionResource {
 		private static final int STEP = 50;
 		private int duration;
 		private Color target;
+		private Future<?> handle;
 		
 		public FadeTask(int duration, Color target) {
 			super(Integer.toString(taskNum.incrementAndGet()));
@@ -62,8 +64,20 @@ public class ActionFade extends ActionResource {
 			this.duration = duration;
 			this.target = target;
 			
-			Lightbulb.tasks.execute(this);
+			handle = Lightbulb.tasks.submit(this);
 		}
+		
+		@Override
+		public void handleGET(CoapExchange exchange) {
+			exchange.respond(CONTENT, "{\"target\":\""+String.format("#%02X%02X%02X", target.getRed(), target.getGreen(), target.getBlue())+"\",\"duration\":"+duration+"}", APPLICATION_JSON);
+		};
+		
+		@Override
+		public void handleDELETE(CoapExchange exchange) {
+			handle.cancel(true);
+			this.delete();
+			exchange.respond(DELETED);
+		};
 
 		@Override
 		public void run() {
@@ -75,37 +89,33 @@ public class ActionFade extends ActionResource {
 			float db = (end[2] - start[2])*STEP/duration;
 			
 			long tik = System.currentTimeMillis();
-			
-			// start with 1 for last step outside loop to guard against overshooting
-			for (int i=1; i*STEP<duration; ++i) {
-				start[0] += dr;
-				start[1] += dg;
-				start[2] += db;
 
-				try {
+			try {
+			
+				// start with 1 for last step outside loop to guard against overshooting
+				for (int i=1; i*STEP<duration; ++i) {
+					start[0] += dr;
+					start[1] += dg;
+					start[2] += db;
+	
 					Thread.sleep(STEP);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
+					Lightbulb.setColor(new Color(start[0], start[1], start[2]));
 				}
 				
-				Lightbulb.setColor(new Color(start[0], start[1], start[2]));
-			}
-			
-			long remaining = duration - (System.currentTimeMillis()-tik);
-			
-			try {
+				long remaining = duration - (System.currentTimeMillis()-tik);
+				
 				Thread.sleep(Math.max(remaining, 0));
+				
+				Lightbulb.setColor(target);
+				
+				System.out.println("Fade (ms): " + (System.currentTimeMillis()-tik));
+
+				this.delete();
+			
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Fade interrupted after " + (System.currentTimeMillis()-tik));
 			}
-			
-			Lightbulb.setColor(target);
-			
-			System.out.println("Fade (ms): " + (System.currentTimeMillis()-tik));
-			
-			this.delete();
 		}
 	}
 }

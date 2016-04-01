@@ -22,7 +22,7 @@ public class LEDColor extends PropertyResource {
 
 	@Override
 	public void handleGET(CoapExchange exchange) {
-		exchange.respond(CONTENT, color.toString(), TEXT_PLAIN);
+		exchange.respond(CONTENT, String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue()), TEXT_PLAIN);
 	}
 	
 	@Override
