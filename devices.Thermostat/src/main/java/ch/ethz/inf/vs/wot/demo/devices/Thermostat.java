@@ -3,7 +3,7 @@ package ch.ethz.inf.vs.wot.demo.devices;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceSemantics;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DynamicDeviceSemantics;
 import ch.ethz.inf.vs.wot.demo.devices.resources.Temperature;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
 
 /**
  * The class Thermostat provides a CoAP server and emulates a smart thermostat.

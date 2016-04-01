@@ -1,9 +1,10 @@
 package ch.ethz.inf.vs.wot.demo.devices;
 
 import ch.ethz.inf.vs.wot.demo.devices.resources.*;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceFrame;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DevicePanel;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
+
 import org.eclipse.californium.core.CoapResource;
 
 import javax.imageio.ImageIO;

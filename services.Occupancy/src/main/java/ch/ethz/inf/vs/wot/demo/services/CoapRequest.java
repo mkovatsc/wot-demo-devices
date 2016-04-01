@@ -4,7 +4,8 @@ package ch.ethz.inf.vs.wot.demo.services;
 import ch.ethz.inf.vs.semantics.parser.ExecutionPlan;
 import ch.ethz.inf.vs.semantics.parser.ExecutionPlan.IRequestFactory;
 import ch.ethz.inf.vs.semantics.parser.ExecutionPlan.RequestCallback;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
+
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;

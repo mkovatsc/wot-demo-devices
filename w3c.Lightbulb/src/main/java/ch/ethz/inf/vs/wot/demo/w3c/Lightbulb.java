@@ -1,13 +1,12 @@
 package ch.ethz.inf.vs.wot.demo.w3c;
 
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceFrame;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DevicePanel;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.utils.w3c.TDRes;
 import ch.ethz.inf.vs.wot.demo.w3c.resources.*;
-import ch.ethz.inf.vs.wot.demo.w3c.utils.TDRes;
 
 import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.network.Endpoint;
 
 import java.awt.*;
 

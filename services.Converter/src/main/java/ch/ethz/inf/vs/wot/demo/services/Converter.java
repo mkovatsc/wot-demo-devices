@@ -1,9 +1,9 @@
 package ch.ethz.inf.vs.wot.demo.services;
 
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
 import ch.ethz.inf.vs.wot.demo.services.resources.CelsiusToFahrenheit;
 import ch.ethz.inf.vs.wot.demo.services.resources.DeviceSemantics;
 import ch.ethz.inf.vs.wot.demo.services.resources.FahrenheitToCelsius;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
 
 /**
  * The class ConverterServer

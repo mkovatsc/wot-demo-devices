@@ -1,10 +1,9 @@
 package ch.ethz.inf.vs.wot.demo.w3c.resources;
 
 import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import ch.ethz.inf.vs.wot.demo.w3c.utils.ActionResource;
+import ch.ethz.inf.vs.wot.demo.utils.w3c.ActionResource;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

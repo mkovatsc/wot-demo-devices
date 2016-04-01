@@ -1,9 +1,10 @@
 package ch.ethz.inf.vs.wot.demo.devices;
 
 import ch.ethz.inf.vs.wot.demo.devices.resources.*;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceFrame;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DevicePanel;
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceFrame;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DevicePanel;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
+
 import org.eclipse.californium.core.CoapResource;
 
 import javax.swing.*;
@@ -20,7 +21,6 @@ public class SmartTV extends DeviceServer {
 	// since we register with the RD, we can use a random port
 	private static int port = 0;
 	private static final long NOTIFICATION_DELAY = 3; // seconds
-	private static final int RD_LIFETIME = 60; // minimum is 60 seconds
 	
 	private static final Color transparent = new Color(0,0,0, Color.TRANSLUCENT);
 	private static DevicePanel tv;

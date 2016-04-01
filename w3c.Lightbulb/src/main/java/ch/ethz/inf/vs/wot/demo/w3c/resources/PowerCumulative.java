@@ -2,9 +2,7 @@ package ch.ethz.inf.vs.wot.demo.w3c.resources;
 
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import com.google.gson.JsonArray;
-
-import ch.ethz.inf.vs.wot.demo.w3c.utils.PropertyResource;
+import ch.ethz.inf.vs.wot.demo.utils.w3c.PropertyResource;
 
 import java.text.DecimalFormat;
 import java.util.Timer;

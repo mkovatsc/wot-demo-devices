@@ -5,8 +5,8 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import com.google.gson.JsonObject;
 
+import ch.ethz.inf.vs.wot.demo.utils.w3c.ActionResource;
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
-import ch.ethz.inf.vs.wot.demo.w3c.utils.ActionResource;
 
 import java.awt.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

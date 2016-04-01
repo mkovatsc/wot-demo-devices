@@ -9,7 +9,9 @@ import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceManufacturer;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceModel;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceName;
 import ch.ethz.inf.vs.wot.demo.devices.resources.DeviceSerial;
-import ch.ethz.inf.vs.wot.demo.devices.utils.*;
+import ch.ethz.inf.vs.wot.demo.utils.devices.*;
+import ch.ethz.inf.vs.wot.demo.utils.restdesc.*;
+
 import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.coap.LinkFormat;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;

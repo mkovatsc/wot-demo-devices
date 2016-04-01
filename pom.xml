@@ -15,7 +15,10 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>devices.utils</module>
+		<module>utils.devices</module>
+		<module>utils.restdesc</module>
+		<module>utils.w3c</module>
+		
 		<module>devices.SmartTV</module>
 		<module>devices.Smartphone</module>
 		<module>devices.Lightbulb</module>

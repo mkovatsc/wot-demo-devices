@@ -1,8 +1,9 @@
 package ch.ethz.inf.vs.wot.demo.services;
 
-import ch.ethz.inf.vs.wot.demo.devices.utils.DeviceServer;
 import ch.ethz.inf.vs.wot.demo.services.lifx.LIFXBulb;
 import ch.ethz.inf.vs.wot.demo.services.resources.*;
+import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
+
 import org.eclipse.californium.core.CoapResource;
 
 
