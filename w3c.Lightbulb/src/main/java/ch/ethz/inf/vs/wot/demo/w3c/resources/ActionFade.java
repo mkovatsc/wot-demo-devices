@@ -19,8 +19,6 @@ import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 public class ActionFade extends ActionResource {
 	
 	protected AtomicInteger taskNum = new AtomicInteger(0);
-	
-	private ScheduledThreadPoolExecutor tasks = new ScheduledThreadPoolExecutor(1);
 
 	public ActionFade() {
 		super("PropertyAction", "Fade", "fade", gson.fromJson("{\"valueType\":{\"duration\":\"xsd:unsignedInteger\",\"target\":\"xsd:string\"}}", JsonObject.class));
@@ -64,7 +62,7 @@ public class ActionFade extends ActionResource {
 			this.duration = duration;
 			this.target = target;
 			
-			tasks.schedule(this, 0, TimeUnit.MILLISECONDS);
+			Lightbulb.tasks.execute(this);
 		}
 
 		@Override
@@ -78,7 +76,8 @@ public class ActionFade extends ActionResource {
 			
 			long tik = System.currentTimeMillis();
 			
-			for (int i=0; i*STEP<duration; ++i) {
+			// start with 1 for last step outside loop to guard against overshooting
+			for (int i=1; i*STEP<duration; ++i) {
 				start[0] += dr;
 				start[1] += dg;
 				start[2] += db;
@@ -93,8 +92,10 @@ public class ActionFade extends ActionResource {
 				Lightbulb.setColor(new Color(start[0], start[1], start[2]));
 			}
 			
+			long remaining = duration - (System.currentTimeMillis()-tik);
+			
 			try {
-				Thread.sleep(duration % STEP);
+				Thread.sleep(Math.max(remaining, 0));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

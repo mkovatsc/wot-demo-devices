@@ -24,6 +24,6 @@ public class WoTResource extends CoapResource {
 	@Override
 	public void setParent(Resource parent) {
 		super.setParent(parent);
-		td.addProperty("href", this.getPath()+this.getName());
+		td.addProperty("href", "./"+this.getPath()+this.getName());
 	}
 }

@@ -22,15 +22,18 @@ public class TDRes extends CoapResource {
 	protected CoapServer thing;
 	protected Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-	public TDRes(CoapServer thing) {
+	private String thingName;
+	
+	public TDRes(CoapServer thing, String thingName) {
 		super("td");
 		getAttributes().setTitle("W3C WoT Thing Description");
 		this.thing = thing;
+		this.thingName = thingName;
 	}
 
 	@Override
 	public void handleGET(CoapExchange exchange) {
-		TD td = new TD();
+		TD td = new TD(thingName);
 		
 		exchange.respond(CONTENT, td.toString(), APPLICATION_JSON);
 	}
@@ -57,6 +60,10 @@ public class TDRes extends CoapResource {
 
 		@SerializedName("events")
 		private ArrayList<JsonObject> events = new ArrayList<JsonObject>();
+		
+		public TD(String thingName) {
+			this.name = thingName;
+		}
 		
 		public String toString() {
 
