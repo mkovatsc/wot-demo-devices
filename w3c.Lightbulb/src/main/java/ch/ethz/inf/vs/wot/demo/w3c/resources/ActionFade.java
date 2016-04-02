@@ -2,6 +2,7 @@ package ch.ethz.inf.vs.wot.demo.w3c.resources;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.core.server.resources.Resource;
 
 import com.google.gson.JsonObject;
 
@@ -9,6 +10,7 @@ import ch.ethz.inf.vs.wot.demo.utils.w3c.ActionResource;
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +29,12 @@ public class ActionFade extends ActionResource {
 
 	@Override
 	public void handleGET(CoapExchange exchange) {
-		
-		exchange.respond(CONTENT, this.getChildren().toString(), TEXT_PLAIN);
+		ArrayList<String> childPaths = new ArrayList<>();
+		for(Resource child : this.getChildren()){
+			childPaths.add(child.getPath());
+		}
+		String response = gson.toJson(childPaths);
+		exchange.respond(CONTENT, response, TEXT_PLAIN);
 	}
 	
 	@Override
