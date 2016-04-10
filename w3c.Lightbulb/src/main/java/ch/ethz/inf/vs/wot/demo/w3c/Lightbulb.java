@@ -119,7 +119,8 @@ public class Lightbulb extends DeviceServer {
 		add(new CoapResource("led").add(
 			new LEDColor(),
 			new LEDObserve(),
-			new ActionFade()));		
+			new ActionFade(),
+			new ActionBlink()));
 
 		// GUI
 		led = new DevicePanel(getClass().getResourceAsStream("superstar_400.png"), 240, 400) {
