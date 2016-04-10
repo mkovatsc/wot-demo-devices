@@ -1,5 +1,6 @@
 package ch.ethz.inf.vs.wot.demo.w3c;
 
+import ch.ethz.inf.vs.wot.demo.services.lifx.LIFXBulb;
 import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceFrame;
 import ch.ethz.inf.vs.wot.demo.utils.devices.DevicePanel;
 import ch.ethz.inf.vs.wot.demo.utils.devices.DeviceServer;
@@ -21,6 +22,8 @@ public class Lightbulb extends DeviceServer {
 	private static final String DEV_ADDRESS = "0.0.0.0";
 	private static final String LIGHTBULB_NAME = "LED Superstar";
 	
+	private static LIFXBulb bulb = null;
+	
 	private static DevicePanel led;
 	private static Color color = Color.white;
 
@@ -35,11 +38,17 @@ public class Lightbulb extends DeviceServer {
 	
 	public static void setColor(Color c) {
 		color = c;
-		led.repaint();
+		update();
 	}
 	
 	public static void update() {
 		led.repaint();
+		if (bulb!=null) {
+			bulb.setPower(PowerRelay.getRelay(), 0);
+			if (PowerRelay.getRelay()) {
+				bulb.setColor(color);
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -47,6 +56,8 @@ public class Lightbulb extends DeviceServer {
 		String address = "0.0.0.0"; // wildcard address -- makes trouble with multiple interfaces
 		int port = 0; // since we register with the RD, we can use a random port
 		String name = LIGHTBULB_NAME;
+		
+		bulb = new LIFXBulb("D0:73:D5:02:72:8C", "192.168.1.255");
 		
 		if (args.length == 1 && args[0].matches("[0-9]{1,5}")) {
 			port = Integer.parseInt(args[0]);
