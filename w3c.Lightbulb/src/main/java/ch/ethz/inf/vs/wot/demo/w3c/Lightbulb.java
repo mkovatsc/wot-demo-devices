@@ -58,8 +58,7 @@ public class Lightbulb extends DeviceServer {
 		int port = 0; // since we register with the RD, we can use a random port
 		String name = LIGHTBULB_NAME;
 		
-		bulb = new LIFXBulb("D0:73:D5:02:72:8C", "192.168.1.255");
-		
+				
 		if (args.length == 1 && args[0].matches("[0-9]{1,5}")) {
 			port = Integer.parseInt(args[0]);
 		} else if (args.length > 0) {
@@ -74,6 +73,8 @@ public class Lightbulb extends DeviceServer {
 					port = Integer.parseInt(args[index+1]);
 				} else if ("-n".equals(arg)) {
 					name = args[index+1];
+				} else if ("-lifx".equals(arg)) {
+					bulb = new LIFXBulb(args[index+1], "192.168.1.255");
 				} else {
 					System.err.println("Unknwon arg "+arg);
 					printUsage();
@@ -99,6 +100,8 @@ public class Lightbulb extends DeviceServer {
 		System.out.println("		Listen on UDP port PORT (default is random port).");
 		System.out.println("	-t THING_NAME");
 		System.out.println("		Give a name for the Thing Description metadata.");
+		System.out.println("	-lifx MAC_ADDR");
+		System.out.println("		If real Lifx bulb is available then its MAC address.");
 		System.exit(0);
 	}
 

@@ -41,6 +41,7 @@ public class ActionFade extends ActionResource {
 	public void handlePOST(CoapExchange exchange) {
 		
 		try {
+			
 			JsonObject json = gson.fromJson(exchange.getRequestText(), JsonObject.class);
 			
 			Color target = Color.decode(json.get("target").getAsString());
@@ -54,7 +55,11 @@ public class ActionFade extends ActionResource {
 			exchange.respond(CREATED);
 			
 		} catch (Exception e) {
-			exchange.respond(BAD_REQUEST, "wrong schema");
+			String schema = "";
+			if(td.has("inputData"))
+				schema = td.get("inputData").toString();
+				
+			exchange.respond(BAD_REQUEST, "wrong schema. expecting " + schema);
 		}
 	}
 	
