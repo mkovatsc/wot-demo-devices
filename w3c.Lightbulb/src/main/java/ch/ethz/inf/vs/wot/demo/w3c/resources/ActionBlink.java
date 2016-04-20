@@ -20,12 +20,6 @@ public class ActionBlink extends ActionResource {
 	public ActionBlink() {
 		super("PropertyAction", "Blink", "blink");
 	}
-
-	@Override
-	public void handleGET(CoapExchange exchange) {
-		
-		exchange.respond(CONTENT, this.getChildren().toString(), TEXT_PLAIN);
-	}
 	
 	@Override
 	public void handlePOST(CoapExchange exchange) {

@@ -10,6 +10,7 @@ import ch.ethz.inf.vs.wot.demo.w3c.resources.*;
 import org.eclipse.californium.core.CoapResource;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,8 +58,7 @@ public class Lightbulb extends DeviceServer {
 		int port = 0; // since we register with the RD, we can use a random port
 		String name = LIGHTBULB_NAME;
 		
-		bulb = new LIFXBulb("D0:73:D5:02:72:8C", "192.168.1.255");
-		
+				
 		if (args.length == 1 && args[0].matches("[0-9]{1,5}")) {
 			port = Integer.parseInt(args[0]);
 		} else if (args.length > 0) {
@@ -73,6 +73,8 @@ public class Lightbulb extends DeviceServer {
 					port = Integer.parseInt(args[index+1]);
 				} else if ("-n".equals(arg)) {
 					name = args[index+1];
+				} else if ("-lifx".equals(arg)) {
+					bulb = new LIFXBulb(args[index+1], "192.168.1.255");
 				} else {
 					System.err.println("Unknwon arg "+arg);
 					printUsage();
@@ -98,6 +100,8 @@ public class Lightbulb extends DeviceServer {
 		System.out.println("		Listen on UDP port PORT (default is random port).");
 		System.out.println("	-t THING_NAME");
 		System.out.println("		Give a name for the Thing Description metadata.");
+		System.out.println("	-lifx MAC_ADDR");
+		System.out.println("		If real Lifx bulb is available then its MAC address.");
 		System.exit(0);
 	}
 
@@ -108,7 +112,7 @@ public class Lightbulb extends DeviceServer {
 	public Lightbulb(String address, int port) {
 		this(address, port, LIGHTBULB_NAME);
 	}
-	
+	static LEDFailureEvent ledFailureEvent = new LEDFailureEvent();
 	@SuppressWarnings("serial")
 	public Lightbulb(String address, int port, String name) {
 		super(address, port);
@@ -131,7 +135,8 @@ public class Lightbulb extends DeviceServer {
 			new LEDColor(),
 			new LEDObserve(),
 			new ActionFade(),
-			new ActionBlink()));
+			new ActionBlink(),
+			ledFailureEvent));		
 
 		// GUI
 		led = new DevicePanel(getClass().getResourceAsStream("superstar_400.png"), 240, 400) {
@@ -152,6 +157,12 @@ public class Lightbulb extends DeviceServer {
 			        g2.fillOval(0, 0, 240, 240);
 		        }
 		    }
+		    
+		    @Override
+			public void mouseClicked(MouseEvent e) {		    	
+		    	ledFailureEvent.notifyEvent(e.getClickCount());
+			}
+
 		};
 
 		new DeviceFrame(led).setVisible(true);

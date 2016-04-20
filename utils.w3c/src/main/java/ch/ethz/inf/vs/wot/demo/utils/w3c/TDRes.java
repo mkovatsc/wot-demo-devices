@@ -90,9 +90,11 @@ public class TDRes extends CoapResource {
 				
 				if (res instanceof PropertyResource) {
 					properties.add(((WoTResource) res).td);
-				} else if (res instanceof ActionResource) {
+				} else if (res instanceof EventResource) {
+					events.add(((WoTResource) res).td);
+				}else if (res instanceof ActionResource) {
 					actions.add(((WoTResource) res).td);
-				}
+				} 
 			}
 		}
 	}

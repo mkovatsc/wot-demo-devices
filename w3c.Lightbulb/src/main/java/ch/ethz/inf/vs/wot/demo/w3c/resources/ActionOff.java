@@ -24,11 +24,6 @@ public class ActionOff extends ActionResource {
 		super("Off", "Fade out", "off", gson.fromJson("{\"valueType\":[null,\"xsd:unsignedInteger\"]}", JsonObject.class));
 	}
 
-	@Override
-	public void handleGET(CoapExchange exchange) {
-		
-		exchange.respond(CONTENT, this.getChildren().toString(), TEXT_PLAIN);
-	}
 	
 	@Override
 	public void handlePOST(CoapExchange exchange) {

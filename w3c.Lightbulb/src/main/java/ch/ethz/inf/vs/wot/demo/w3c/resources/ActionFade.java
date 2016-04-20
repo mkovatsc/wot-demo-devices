@@ -2,6 +2,7 @@ package ch.ethz.inf.vs.wot.demo.w3c.resources;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.core.server.resources.Resource;
 
 import com.google.gson.JsonObject;
 
@@ -9,6 +10,7 @@ import ch.ethz.inf.vs.wot.demo.utils.w3c.ActionResource;
 import ch.ethz.inf.vs.wot.demo.w3c.Lightbulb;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -25,16 +27,12 @@ public class ActionFade extends ActionResource {
 		super("PropertyAction", "Fade", "fade", gson.fromJson("{\"valueType\":{\"duration\":\"xsd:unsignedInteger\",\"target\":\"xsd:string\"}}", JsonObject.class));
 	}
 
-	@Override
-	public void handleGET(CoapExchange exchange) {
-		
-		exchange.respond(CONTENT, this.getChildren().toString(), TEXT_PLAIN);
-	}
 	
 	@Override
 	public void handlePOST(CoapExchange exchange) {
 		
 		try {
+			
 			JsonObject json = gson.fromJson(exchange.getRequestText(), JsonObject.class);
 			
 			Color target = Color.decode(json.get("target").getAsString());
@@ -48,7 +46,11 @@ public class ActionFade extends ActionResource {
 			exchange.respond(CREATED);
 			
 		} catch (Exception e) {
-			exchange.respond(BAD_REQUEST, "wrong schema");
+			String schema = "";
+			if(td.has("inputData"))
+				schema = td.get("inputData").toString();
+				
+			exchange.respond(BAD_REQUEST, "wrong schema. expecting " + schema);
 		}
 	}
 	
