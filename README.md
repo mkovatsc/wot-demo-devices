@@ -1,6 +1,6 @@
-# Samsung WoT Demo
+# Web of Things Demo Devices
 
-Web of Things Demonstrator
+Collection of virtual devices using RESTdesc or W3C WoT
 
 ## Prerequisites
 

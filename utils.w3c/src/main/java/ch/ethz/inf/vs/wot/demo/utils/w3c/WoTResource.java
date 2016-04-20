@@ -5,7 +5,9 @@ import org.eclipse.californium.core.server.resources.Resource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 public class WoTResource extends CoapResource {
 	
@@ -24,6 +26,9 @@ public class WoTResource extends CoapResource {
 	@Override
 	public void setParent(Resource parent) {
 		super.setParent(parent);
-		td.addProperty("href", "./"+this.getPath()+this.getName());
+		JsonArray hrefs = new JsonArray();
+		hrefs.add(new JsonPrimitive("./"+this.getPath()+this.getName()));
+		td.add("hrefs", hrefs );
+		td.add("hrefs", hrefs );
 	}
 }
