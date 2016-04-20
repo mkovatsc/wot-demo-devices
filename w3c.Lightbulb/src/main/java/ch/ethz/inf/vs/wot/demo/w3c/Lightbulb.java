@@ -10,6 +10,7 @@ import ch.ethz.inf.vs.wot.demo.w3c.resources.*;
 import org.eclipse.californium.core.CoapResource;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -108,7 +109,7 @@ public class Lightbulb extends DeviceServer {
 	public Lightbulb(String address, int port) {
 		this(address, port, LIGHTBULB_NAME);
 	}
-	
+	static LEDFailureEvent ledFailureEvent = new LEDFailureEvent();
 	@SuppressWarnings("serial")
 	public Lightbulb(String address, int port, String name) {
 		super(address, port);
@@ -131,7 +132,8 @@ public class Lightbulb extends DeviceServer {
 			new LEDColor(),
 			new LEDObserve(),
 			new ActionFade(),
-			new ActionBlink()));
+			new ActionBlink(),
+			ledFailureEvent));		
 
 		// GUI
 		led = new DevicePanel(getClass().getResourceAsStream("superstar_400.png"), 240, 400) {
@@ -152,6 +154,12 @@ public class Lightbulb extends DeviceServer {
 			        g2.fillOval(0, 0, 240, 240);
 		        }
 		    }
+		    
+		    @Override
+			public void mouseClicked(MouseEvent e) {		    	
+		    	ledFailureEvent.notifyEvent(e.getClickCount());
+			}
+
 		};
 
 		new DeviceFrame(led).setVisible(true);
