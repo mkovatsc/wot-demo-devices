@@ -27,15 +27,6 @@ public class ActionFade extends ActionResource {
 		super("PropertyAction", "Fade", "fade", gson.fromJson("{\"valueType\":{\"duration\":\"xsd:unsignedInteger\",\"target\":\"xsd:string\"}}", JsonObject.class));
 	}
 
-	@Override
-	public void handleGET(CoapExchange exchange) {
-		ArrayList<String> childPaths = new ArrayList<>();
-		for(Resource child : this.getChildren()){
-			childPaths.add(child.getPath());
-		}
-		String response = gson.toJson(childPaths);
-		exchange.respond(CONTENT, response, TEXT_PLAIN);
-	}
 	
 	@Override
 	public void handlePOST(CoapExchange exchange) {
